@@ -13,7 +13,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
+            <state relative-caret-position="544">
               <caret line="42" column="61" selection-start-line="42" selection-start-column="61" selection-end-line="42" selection-end-column="61" />
             </state>
           </provider>
@@ -186,6 +186,12 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/docs/Makefile">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.editorconfig">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/devbox/devbox.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -196,18 +202,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/docs/Makefile">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.editorconfig">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/test_devbox.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
+        <state relative-caret-position="544">
           <caret line="42" column="61" selection-start-line="42" selection-start-column="61" selection-end-line="42" selection-end-column="61" />
         </state>
       </provider>
