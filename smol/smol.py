@@ -28,7 +28,7 @@ class Smol:
         self._ssh = self._connect()
         if kinit:
             self.kinit()
-        self._remote_home_dir = self.exec('echo $HOME', capture_output=True).strip()
+        self._remote_home_dir = self.get_output('echo $HOME').strip()
         return
 
     def _get_pkey(self):
