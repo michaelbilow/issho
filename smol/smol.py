@@ -5,7 +5,7 @@
 import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
-from smol.helpers import absolute_path
+from smol.helpers import absolute_path, default_sftp_path
 import sys
 
 
@@ -20,12 +20,14 @@ class Smol:
         self.key_path = key_path
         self.config_path = config_path
         self.host = host
-        self.conf = self.get_smol_ssh_config()
+        self.conf = self._get_smol_ssh_config()
         self.hostname = self.conf['hostname']
         self.port = int(self.conf['port'])
         self.user = self.conf['user']
         self.kinit_service = kinit_service
-        self._ssh = self.connect(kinit=kinit)
+        self._ssh = self.connect()
+        if kinit:
+            self.kinit()
         return
 
     def _get_pkey(self):
@@ -33,7 +35,7 @@ class Smol:
         return paramiko.RSAKey.from_private_key_file(
             key_file, password=keyring.get_password('SSH', key_file))
 
-    def get_smol_ssh_config(self):
+    def _get_smol_ssh_config(self):
         ssh_config_file = absolute_path(self.config_path)
         conf = paramiko.SSHConfig()
         conf.parse(open(ssh_config_file))
@@ -50,15 +52,13 @@ class Smol:
         tunnel.start()
         return tunnel
 
-    def connect(self, kinit=True):
+    def connect(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(self.hostname,
                     username=self.user,
                     port=self.port,
                     pkey=self._get_pkey())
-        if kinit:
-            self.kinit()
         return ssh
 
     def exec(self, cmd, bg=False, debug=False):
@@ -76,14 +76,18 @@ class Smol:
     def exec_bg(self, cmd):
         return self.exec(cmd, bg=True)
 
-    def get(self, remote_path, local_path):
+    def get(self, remotepath, localpath=None):
+        if not localpath:
+            localpath = default_sftp_path(remotepath)
         with self._ssh.open_sftp() as sftp:
-            sftp.get(remote_path=remote_path, local_path=local_path)
+            sftp.get(remotepath=remotepath, localpath=localpath)
         return
 
-    def put(self, local_path, remote_path):
+    def put(self, localpath, remotepath=None):
+        if not remotepath:
+            remotepath = default_sftp_path(localpath)
         with self._ssh.open_sftp() as sftp:
-            sftp.put(local_path=local_path, remote_path=remote_path)
+            sftp.put(localpath=localpath, remotepath=remotepath)
         return
 
     def kinit(self):
