@@ -9,7 +9,7 @@ from smol.helpers import absolute_path
 import sys
 
 
-class smol:
+class Smol:
 
     def __init__(self,
                  key_path='~/.ssh/id_rsa',
