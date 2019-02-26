@@ -40,7 +40,7 @@ setup(
     license="MIT license",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
-    keywords='smol,paramiko,sshtunnel,keyring,ssh',
+    keywords='smol,paramiko,sshtunnel,keyring,ssh,sftp,pysftp,sshed,python',
     name='smol',
     packages=find_packages(include=['smol']),
     setup_requires=setup_requirements,

@@ -14,7 +14,7 @@ smol
         :alt: Documentation Status
 
 
-A smol wrapper over paramiko_ that uses keyring_ to
+A smol and intuitive wrapper over paramiko_ that uses keyring_ to
 manage secrets locally.
 
 ``smol`` is designed such that interacting with a

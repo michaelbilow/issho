@@ -1,6 +1,5 @@
 from pathlib import Path
 import socket
-import os
 
 
 def absolute_path(raw_path):
@@ -9,14 +8,14 @@ def absolute_path(raw_path):
     return str(raw_path.expanduser())
 
 
-def default_sftp_path(input_path):
-    return os.path.split(input_path)[1]
+def default_sftp_path(this_path, that_path):
+    return Path(this_path) if this_path else Path(that_path).name
 
 
-def able_to_connect(host, port):
+def able_to_connect(host, port, timeout=1.5):
     try:
         sock = socket.socket()
-        sock.settimeout(3)
+        sock.settimeout(timeout)
         sock.connect((host, port))
     except Exception as e:
         return False
