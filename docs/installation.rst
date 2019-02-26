@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install devbox, run this command in your terminal:
+To install smol, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install devbox
+    $ pip install smol
 
-This is the preferred method to install devbox, as it will always install the most recent stable release.
+This is the preferred method to install smol, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,19 +26,19 @@ you through the process.
 From sources
 ------------
 
-The sources for devbox can be downloaded from the `Github repo`_.
+The sources for smol can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/michaelbilow/devbox
+    $ git clone git://github.com/michaelbilow/smol
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/michaelbilow/devbox/tarball/master
+    $ curl  -OL https://github.com/michaelbilow/smol/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/michaelbilow/devbox
-.. _tarball: https://github.com/michaelbilow/devbox/tarball/master
+.. _Github repo: https://github.com/michaelbilow/smol
+.. _tarball: https://github.com/michaelbilow/smol/tarball/master

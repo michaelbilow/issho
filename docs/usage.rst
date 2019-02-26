@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use devbox in a project::
+To use smol in a project::
 
-    import devbox
+    import smol

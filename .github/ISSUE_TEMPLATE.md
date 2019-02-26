@@ -1,4 +1,4 @@
-* devbox version:
+* smol version:
 * Python version:
 * Operating System:
 

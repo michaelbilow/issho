@@ -1,32 +1,35 @@
 ======
-devbox
+smol
 ======
 
 
-.. image:: https://img.shields.io/pypi/v/devbox.svg
-        :target: https://pypi.python.org/pypi/devbox
+.. image:: https://img.shields.io/pypi/v/smol.svg
+        :target: https://pypi.python.org/pypi/smol
 
-.. image:: https://img.shields.io/travis/michaelbilow/devbox.svg
-        :target: https://travis-ci.org/michaelbilow/devbox
+.. image:: https://img.shields.io/travis/michaelbilow/smol.svg
+        :target: https://travis-ci.org/michaelbilow/smol
 
-.. image:: https://readthedocs.org/projects/devbox/badge/?version=latest
-        :target: https://devbox.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/smol/badge/?version=latest
+        :target: https://smol.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
 
 
-devbox allows easy access to simple commands on a remote machine.
+smol allows easy access to simple commands on a remote machine.
 
 
 * Free software: MIT license
-* Documentation: https://devbox.readthedocs.io.
+* Documentation: https://smol.readthedocs.io.
 
 
 Features
 --------
 
-* TODO
+* Simple access for simple commands
+    - Port forwarding
+    - Executing commands over ssh
+    - Transferring files over sftp
 
 Credits
 -------

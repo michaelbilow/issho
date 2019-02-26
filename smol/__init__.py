@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for devbox."""
+"""Top-level package for smol."""
 
 __author__ = """Michael Bilow"""
 __email__ = 'michael.k.bilow@gmail.com'

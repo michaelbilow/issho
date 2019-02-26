@@ -5,10 +5,11 @@
 import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
-from devbox.helpers import absolute_path, able_to_connect
+from smol.helpers import absolute_path
 import sys
 
-class Devbox:
+
+class smol:
 
     def __init__(self,
                  key_path='~/.ssh/id_rsa',
@@ -19,12 +20,12 @@ class Devbox:
         self.key_path = key_path
         self.config_path = config_path
         self.host = host
-        self.conf = self.get_devbox_ssh_config()
+        self.conf = self.get_smol_ssh_config()
         self.hostname = self.conf['hostname']
         self.port = int(self.conf['port'])
         self.user = self.conf['user']
         self.kinit_service = kinit_service
-        self.connect(kinit=kinit)
+        self._ssh = self.connect(kinit=kinit)
         return
 
     def _get_pkey(self):
@@ -32,12 +33,12 @@ class Devbox:
         return paramiko.RSAKey.from_private_key_file(
             key_file, password=keyring.get_password('SSH', key_file))
 
-    def get_devbox_ssh_config(self):
+    def get_smol_ssh_config(self):
         ssh_config_file = absolute_path(self.config_path)
         conf = paramiko.SSHConfig()
         conf.parse(open(ssh_config_file))
-        devbox_conf = conf.lookup(self.host)
-        return devbox_conf
+        smol_conf = conf.lookup(self.host)
+        return smol_conf
 
     def local_forward(self, remote_host, remote_port, local_host='0.0.0.0', local_port=44556):
         tunnel = SSHTunnelForwarder(
@@ -55,27 +56,33 @@ class Devbox:
         ssh.connect(self.hostname,
                     username=self.user,
                     port=self.port,
-                    pkey=self._get_pkey(),)
-        self.ssh = ssh
+                    pkey=self._get_pkey())
         if kinit:
             self.kinit()
-        return
+        return ssh
 
-    def exec(self, cmd):
-        stdin, stdout, stderr = self.ssh.exec_command(cmd)
+    def exec(self, cmd, bg=False, debug=False):
+        if bg:
+            cmd = 'cmd=$"{}"; nohup bash -c "$cmd" &'.format(cmd.replace('"', r'\"'))
+        if debug:
+            print(cmd)
+        stdin, stdout, stderr = self._ssh.exec_command(cmd)
         for line in stdout:
             print(line, end='')
         for line in stderr:
             sys.stderr.write(line)
         return
 
+    def exec_bg(self, cmd):
+        return self.exec(cmd, bg=True)
+
     def get(self, remote_path, local_path):
-        with self.ssh.open_sftp() as sftp:
+        with self._ssh.open_sftp() as sftp:
             sftp.get(remote_path=remote_path, local_path=local_path)
         return
 
     def put(self, local_path, remote_path):
-        with self.ssh.open_sftp() as sftp:
+        with self._ssh.open_sftp() as sftp:
             sftp.put(local_path=local_path, remote_path=remote_path)
         return
 

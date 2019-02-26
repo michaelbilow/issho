@@ -1,4 +1,4 @@
-Welcome to devbox's documentation!
+Welcome to smol's documentation!
 ======================================
 
 .. toctree::
