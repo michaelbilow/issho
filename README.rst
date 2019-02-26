@@ -14,9 +14,13 @@ smol
         :alt: Documentation Status
 
 
+A smol wrapper over paramiko_ that uses keyring_ to
+manage secrets locally.
 
-
-smol allows easy access to simple commands on a remote machine.
+``smol`` is designed such that interacting with a
+single, heavily used remote machine should
+be *easy*, and working with more than one remote
+machine should be *simple*.
 
 
 * Free software: MIT license
@@ -34,7 +38,24 @@ Features
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+This package was created with Cookiecutter_
+and the `audreyr/cookiecutter-pypackage`_ project template.
+
+The sftp work and testing framework is adapted from `Jeff Hinrichs`_'s
+excellent pysftp_ package, and some of the ssh
+framework is inspired by `Colin Wood`_'s sshed_.
+
+Shout out to `Spencer Tipping`_, `Neal Fultz`_, and `Factual`_
+for helping me learn to write my own tools.
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _paramiko: http://www.paramiko.org/
+.. _sshed: https://github.com/cwood/sshed
+.. _pysftp: https://bitbucket.org/dundeemt/pysftp
+.. _keyring: https://github.com/jaraco/keyring
+.. _Jeff Hinrichs: https://bitbucket.org/dundeemt/
+.. _Colin Wood: https://github.com/cwood
+.. _Spencer Tipping: https://github.com/spencertipping
+.. _Neal Fultz: https://github.com/nfultz
+.. _Factual: https://www.factual.com
