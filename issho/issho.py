@@ -7,7 +7,6 @@ import keyring
 from sshtunnel import SSHTunnelForwarder
 from issho.helpers import absolute_path, default_sftp_path
 import sys
-from collections import namedtuple
 
 
 class Issho:
