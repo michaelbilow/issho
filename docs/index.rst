@@ -1,4 +1,4 @@
-Welcome to smol's documentation!
+Welcome to issho's documentation!
 ======================================
 
 .. toctree::

@@ -5,11 +5,11 @@
 import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
-from smol.helpers import absolute_path, default_sftp_path
+from issho.helpers import absolute_path, default_sftp_path
 import sys
 
 
-class Smol:
+class Issho:
 
     def __init__(self,
                  key_path='~/.ssh/id_rsa',
@@ -20,7 +20,7 @@ class Smol:
         self.key_path = key_path
         self.config_path = config_path
         self.host = host
-        self.conf = self._get_smol_ssh_config()
+        self.conf = self._get_issho_ssh_config()
         self.hostname = self.conf['hostname']
         self.port = int(self.conf['port'])
         self.user = self.conf['user']
@@ -36,12 +36,12 @@ class Smol:
         return paramiko.RSAKey.from_private_key_file(
             key_file, password=keyring.get_password('SSH', key_file))
 
-    def _get_smol_ssh_config(self):
+    def _get_issho_ssh_config(self):
         ssh_config_file = absolute_path(self.config_path)
         conf = paramiko.SSHConfig()
         conf.parse(open(ssh_config_file))
-        smol_conf = conf.lookup(self.host)
-        return smol_conf
+        issho_conf = conf.lookup(self.host)
+        return issho_conf
 
     def local_forward(self, remote_host, remote_port, local_host='0.0.0.0', local_port=44556):
         tunnel = SSHTunnelForwarder(

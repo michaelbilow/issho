@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use smol in a project::
+To use issho in a project::
 
-    import smol
+    import issho

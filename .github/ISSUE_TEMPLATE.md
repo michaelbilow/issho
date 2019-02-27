@@ -1,4 +1,4 @@
-* smol version:
+* issho version:
 * Python version:
 * Operating System:
 

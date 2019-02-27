@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for `smol` package."""
+"""Tests for `issho` package."""
 
 
 import unittest
 
-from smol import smol
+from issho import issho
 
 
-class Testsmol(unittest.TestCase):
-    """Tests for `smol` package."""
+class Testissho(unittest.TestCase):
+    """Tests for `issho` package."""
 
     def setUp(self):
         """Set up test fixtures, if any."""
