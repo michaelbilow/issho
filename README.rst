@@ -2,6 +2,9 @@
 issho
 ======
 
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+    :target: https://raw.githubusercontent.com/usc-isi-i2/pyrallel/master/LICENSE
+    :alt: License
 
 .. image:: https://img.shields.io/pypi/v/issho.svg
         :target: https://pypi.python.org/pypi/issho
@@ -26,11 +29,17 @@ machine should be *simple*.
 * Free software: MIT license
 * Documentation: https://issho.readthedocs.io.
 
+Installation
+------------
+::
+
+    pip install issho
+
 
 Features
 --------
 
-* Simple access for simple commands
+* Simple access to simple commands
     - Port forwarding
     - Executing commands over ssh
     - Transferring files over sftp
@@ -41,7 +50,7 @@ Credits
 This package was created with Cookiecutter_
 and the `audreyr/cookiecutter-pypackage`_ project template.
 
-The sftp work and testing framework is adapted from `Jeff Hinrichs`_'s
+The sftp work and (future)testing framework is adapted from `Jeff Hinrichs`_'s
 excellent pysftp_ package, and some of the ssh
 framework is inspired by `Colin Wood`_'s sshed_.
 

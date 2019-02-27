@@ -7,6 +7,7 @@ import keyring
 from sshtunnel import SSHTunnelForwarder
 from issho.helpers import absolute_path, default_sftp_path
 import sys
+from collections import namedtuple
 
 
 class Issho:
@@ -87,17 +88,15 @@ class Issho:
         return self.exec(cmd, capture_output=True, **kwargs)
 
     def get(self, remotepath, localpath=None):
-        localpath, remotepath = self._sftp_paths(
-            localpath=localpath, remotepath=remotepath)
+        paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
         with self._ssh.open_sftp() as sftp:
-            sftp.get(remotepath=remotepath, localpath=localpath)
+            sftp.get(remotepath=paths['remotepath'], localpath=paths['localpath'])
         return
 
     def put(self, localpath, remotepath=None):
-        localpath, remotepath = self._sftp_paths(
-            localpath=localpath, remotepath=remotepath)
+        paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
         with self._ssh.open_sftp() as sftp:
-            sftp.put(localpath=localpath, remotepath=remotepath)
+            sftp.put(localpath=paths['localpath'], remotepath=paths['remotepath'], callback=self._sftp_progress)
         return
 
     def kinit(self):
@@ -111,5 +110,9 @@ class Issho:
     def _sftp_paths(self, localpath, remotepath):
         localpath = default_sftp_path(localpath, remotepath)
         remotepath = default_sftp_path(remotepath, localpath)
-        return str(localpath.expanduser()), \
-               str(remotepath).replace('~', self._remote_home_dir)
+        return {'localpath': str(localpath.expanduser()),
+                'remotepath': str(remotepath).replace('~', self._remote_home_dir)}
+
+    @staticmethod
+    def _sftp_progress(transferred, remaining):
+        print('{:.1f} MB transferred, {:.1f} MB remaining'.format(transferred/2**20, remaining/2**20))
