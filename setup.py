@@ -38,11 +38,15 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     description="issho allows easy access to simple commands on a remote machine.",
+    entry_points='''
+        [console_scripts]
+        issho=issho.cli:main
+    ''',
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
-    keywords='issho,paramiko,sshtunnel,keyring,ssh,sftp,pysftp,sshed,python',
+    keywords='issho,paramiko,keyring,ssh,sftp,python,python-fire,prompt-toolkit,pysftp,sshed,sshtunnel',
     name='issho',
     packages=find_packages(include=['issho']),
     setup_requires=setup_requirements,
