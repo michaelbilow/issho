@@ -6,6 +6,7 @@ import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
 from issho.helpers import absolute_path, default_sftp_path
+from issho.config import _get_conf_variable
 import sys
 
 
@@ -106,6 +107,12 @@ class Issho:
                           "python -m keyring set kinit {}".format(self.user))
         return
 
+    def hive(self, query, **kwargs):
+        clean_query = query.replace('\n', ' ')
+        beeline_jdbc = _get_conf_variable()
+        tmp_filename = '/tmp/issho_{}.sql'.format()
+        self.exec('beeline -u {opts} "{jdbc}" -f '.format(_get_conf_variable('HIVE_OPTS'),), **kwargs)
+
     def _sftp_paths(self, localpath, remotepath):
         localpath = default_sftp_path(localpath, remotepath)
         remotepath = default_sftp_path(remotepath, localpath)
@@ -115,3 +122,9 @@ class Issho:
     @staticmethod
     def _sftp_progress(transferred, remaining):
         print('{:.1f} MB transferred, {:.1f} MB remaining'.format(transferred/2**20, remaining/2**20))
+
+    def configure(self):
+        ## Name your profile
+
+        ## add your ssh passphrase
+        return
