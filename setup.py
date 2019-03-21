@@ -16,8 +16,8 @@ requirements = [
     'keyring>=18.0.0',
     'paramiko>=2.4.0',
     'cryptography==2.4.2',  # https://github.com/paramiko/paramiko/issues/1369
-    'fire>=0.1.3',
-    'prompt_toolkit>=2.0.5'
+    'prompt_toolkit>=2.0.5',
+    'toml>=0.10.0'
 ]
 
 setup_requirements = [ ]

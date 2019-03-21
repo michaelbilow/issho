@@ -6,9 +6,8 @@ import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
 from issho.helpers import absolute_path, default_sftp_path
-from issho.config import _get_conf_variable
 import sys
-
+import time
 
 class Issho:
 
@@ -16,16 +15,16 @@ class Issho:
                  key_path='~/.ssh/id_rsa',
                  config_path="~/.ssh/config",
                  host='dev',
-                 kinit_service='kinit',
                  kinit=True):
         self.key_path = key_path
         self.config_path = config_path
         self.host = host
-        self.conf = self._get_issho_ssh_config()
-        self.hostname = self.conf['hostname']
-        self.port = int(self.conf['port'])
-        self.user = self.conf['user']
-        self.kinit_service = kinit_service
+        self.remote_conf =
+        self.ssh_conf = self._get_issho_ssh_config()
+        self.hostname = self.ssh_conf['hostname']
+        self.port = int(self.ssh_conf['port'])
+        self.user = self.ssh_conf['user']
+        self.kinit_service = '{}_kinit'.format(host)
         self._ssh = self._connect()
         if kinit:
             self.kinit()
@@ -103,15 +102,17 @@ class Issho:
         if keyring.get_password(self.kinit_service, self.user):
             self.exec('echo {} | kinit'.format(keyring.get_password(self.kinit_service, self.user)))
         else:
-            raise OSError("Add your kinit password to your keyring via\n"
-                          "python -m keyring set kinit {}".format(self.user))
+            raise OSError("Add your kinit password to your keyring")
         return
 
     def hive(self, query, **kwargs):
-        clean_query = query.replace('\n', ' ')
-        beeline_jdbc = _get_conf_variable()
-        tmp_filename = '/tmp/issho_{}.sql'.format()
-        self.exec('beeline -u {opts} "{jdbc}" -f '.format(_get_conf_variable('HIVE_OPTS'),), **kwargs)
+        tmp_filename = '/tmp/issho_{}.sql'.format(int(time.time()))
+        with open(tmp_filename, 'w') as f:
+            f.write(query)
+        self.put(tmp_filename, tmp_filename)
+
+        self.exec('beeline -u {opts} "{jdbc}" -f {fn}'.format(_get_conf_variable('HIVE_OPTS'),
+                                                          _get_conf_variable('HIVE_JDBC')), **kwargs)
 
     def _sftp_paths(self, localpath, remotepath):
         localpath = default_sftp_path(localpath, remotepath)

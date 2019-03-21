@@ -1,19 +1,22 @@
-import os
+import toml
 
-ISSHO_CONFIG_OPTS = {
-    'HIVE_JDBC': None,
-    'HIVE_OPTS': '--maxHistoryRows=1000000 --outputformat=tsv2'
-}
-
-ISSHO_CONFIG = {
-    k: os.environ.get(k) for k in ISSHO_CONFIG_OPTS
-}
+ISSHO_CONF_FILE = Path('~/.issho/conf.toml').resolve()
+from pathlib import Path
 
 
-
-def load_profile(hostname):
+def _make_issho_conf_dir():
+    if not ISSHO_CONF_FILE.exists():
+        ISSHO_CONF_FILE.parent.mkdir()
     return
 
 
-def _get_conf_variable(var_name):
+def read_issho_conf():
+    _make_issho_conf_dir()
+    return toml.load(ISSHO_CONF_FILE)
 
+
+def write_issho_conf(new_conf_dict):
+    old_issho_conf = toml.load(ISSHO_CONF_FILE)
+    new_conf = {**old_issho_conf, **new_conf_dict}
+    toml.dump(new_conf, ISSHO_CONF_FILE)
+    return
