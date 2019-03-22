@@ -7,6 +7,7 @@ Welcome to issho's documentation!
 
    readme
    installation
+   setup
    usage
    modules
    contributing

@@ -17,7 +17,8 @@ issho
         :alt: Documentation Status
 
 
-A issho and intuitive wrapper over paramiko_ that uses keyring_ to
+``issho`` and intuitive wrapper over paramiko_ for configuring
+and talking to a remote host. keyring_ is used to
 manage secrets locally.
 
 ``issho`` is designed such that interacting with a
