@@ -17,7 +17,8 @@ requirements = [
     'paramiko>=2.4.0',
     'cryptography==2.4.2',  # https://github.com/paramiko/paramiko/issues/1369
     'prompt_toolkit>=2.0.5',
-    'toml>=0.10.0'
+    'toml>=0.10.0',
+    'fire>=0.1.3'
 ]
 
 setup_requirements = [ ]

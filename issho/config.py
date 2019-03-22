@@ -1,7 +1,7 @@
 import toml
 from pathlib import Path
 
-ISSHO_CONF_FILE = Path('~/.issho/conf.toml').resolve()
+ISSHO_CONF_FILE = Path.home().joinpath('.issho').joinpath('conf.toml')
 
 
 def _make_issho_conf_dir():
@@ -23,5 +23,5 @@ def write_issho_conf(new_conf_dict):
     _make_issho_conf_dir()
     old_issho_conf = toml.load(ISSHO_CONF_FILE)
     new_conf = {**old_issho_conf, **new_conf_dict}
-    toml.dump(new_conf, ISSHO_CONF_FILE)
+    toml.dump(new_conf, open(str(ISSHO_CONF_FILE), 'w'))
     return

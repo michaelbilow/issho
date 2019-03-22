@@ -10,6 +10,7 @@ from issho.config import read_issho_conf
 import sys
 import time
 
+
 class Issho:
 
     def __init__(self,
@@ -25,7 +26,6 @@ class Issho:
         self.hostname = self.ssh_conf['hostname']
         self.port = int(self.ssh_conf['port'])
         self.user = self.ssh_conf['user']
-        self.kinit_service = '{}_kinit'.format(host)
         self._ssh = self._connect()
         if kinit:
             self.kinit()
@@ -100,20 +100,23 @@ class Issho:
         return
 
     def kinit(self):
-        if keyring.get_password(self.kinit_service, self.user):
-            self.exec('echo {} | kinit'.format(keyring.get_password(self.kinit_service, self.user)))
+        kinit_pw = keyring.get_password('{}_kinit'.format(self.host), self.user)
+        if kinit_pw:
+            self.exec('echo {} | kinit'.format(kinit_pw))
         else:
             raise OSError("Add your kinit password to your keyring")
         return
 
-    def hive(self, query, **kwargs):
-        tmp_filename = '/tmp/issho_{}.sql'.format(int(time.time()))
+    def hive(self, query):
+        tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
         with open(tmp_filename, 'w') as f:
             f.write(query)
         self.put(tmp_filename, tmp_filename)
 
-        self.exec('beeline -u {opts} "{jdbc}" -f {fn}'.format(_get_conf_variable('HIVE_OPTS'),
-                                                          _get_conf_variable('HIVE_JDBC')), **kwargs)
+        self.exec('beeline {opts} -u  "{jdbc}" -f {fn}'.format(
+            opts=self.remote_conf['HIVE_OPTS'],
+            jdbc=self.remote_conf['HIVE_JDBC'],
+            fn=tmp_filename))
 
     def _sftp_paths(self, localpath, remotepath):
         localpath = default_sftp_path(localpath, remotepath)
@@ -125,8 +128,3 @@ class Issho:
     def _sftp_progress(transferred, remaining):
         print('{:.1f} MB transferred, {:.1f} MB remaining'.format(transferred/2**20, remaining/2**20))
 
-    def configure(self):
-        ## Name your profile
-
-        ## add your ssh passphrase
-        return
