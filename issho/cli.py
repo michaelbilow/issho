@@ -6,8 +6,18 @@ import fire
 
 
 class IsshoCLI:
+    """
+    CLI for Issho; right now only used for configuration
+    """
 
     def config(self, profile):
+        """
+        Configures a single issho profile.
+
+        :param profile: name of the profile to configure; should
+        match the name in the ssh config.
+        """
+
         while True:
             pw = prompt("Enter the profile's kinit password: ", is_password=True)
             if not pw:
@@ -30,7 +40,11 @@ class IsshoCLI:
         }
         write_issho_conf({profile: new_conf})
 
+
 def main():
+    """
+    Inititates the CLI using python-fire
+    """
     fire.Fire(IsshoCLI)
 
 

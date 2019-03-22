@@ -86,11 +86,16 @@ class Issho:
         Note, this command does not use an interactive terminal;
         it instead uses a *non-interactive login* shell.
         This means (specifically) that your aliased commands will not work
-        and
-        :param cmd:
-        :param bg:
-        :param debug:
-        :param capture_output:
+        and only variables exported in your remote .bashrc will be available.
+
+        :param cmd: The bash command to be run remotely
+
+        :param bg: True = run in the background
+
+        :param debug: True = print some debugging output
+
+        :param capture_output: True = return stdout as a string
+
         :return:
         """
         if bg:
@@ -111,24 +116,47 @@ class Issho:
         return captured_output
 
     def exec_bg(self, cmd, **kwargs):
+        """
+        Syntactic sugar for exec(bg=True)
+        """
         return self.exec(cmd, bg=True, **kwargs)
 
     def get_output(self, cmd, **kwargs):
+        """
+        Syntactic sugar for exec(capture_output=True)
+        """
         return self.exec(cmd, capture_output=True, **kwargs)
 
     def get(self, remotepath, localpath=None):
+        """
+        Gets the file at the remote path and puts it locally.
+
+        :param remotepath: The path on the remote from which to get.
+
+        :param localpath: Defaults to the name of the remote path
+        """
         paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
         with self._ssh.open_sftp() as sftp:
             sftp.get(remotepath=paths['remotepath'], localpath=paths['localpath'])
         return
 
     def put(self, localpath, remotepath=None):
+        """
+        Puts the file at the local path to the remote.
+
+        :param localpath: The local path of the file to put to the remote
+
+        :param remotepath: Defaults to the name of the local path
+        """
         paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
         with self._ssh.open_sftp() as sftp:
             sftp.put(localpath=paths['localpath'], remotepath=paths['remotepath'], callback=self._sftp_progress)
         return
 
     def kinit(self):
+        """
+        Runs kerberos init
+        """
         kinit_pw = keyring.get_password('{}_kinit'.format(self.profile), self.user)
         if kinit_pw:
             self.exec('echo {} | kinit'.format(kinit_pw))
@@ -137,6 +165,13 @@ class Issho:
         return
 
     def hive(self, query):
+        """
+        Runs a hive query using the parameters
+        set in .issho/config.toml
+
+        :param query: a string query, or the name of a query file
+        name to run.
+        """
         tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
         if query.endswith('sql', 'hql'):
             copyfile(query, tmp_filename)
