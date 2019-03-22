@@ -12,10 +12,11 @@ from issho.issho import Issho
 
 # module level doc-string
 __doc__ = """
-issho - simple 
+issho - simple connections to remote machines
 =====================================================================
 **issho** is a Python package providing a simple wrapper over
 paramiko, providing = operators interacting with remote machines 
+
 Main Features
 -------------
 Here are a few of the things that issho (should) do well:

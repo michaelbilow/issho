@@ -17,12 +17,12 @@ class Issho:
     def __init__(self,
                  key_path='~/.ssh/id_rsa',
                  ssh_config_path="~/.ssh/config",
-                 host='dev',
+                 profile='dev',
                  kinit=True):
         self.key_path = key_path
         self.ssh_config_path = ssh_config_path
-        self.host = host
-        self.remote_conf = read_issho_conf(host)
+        self.profile = profile
+        self.remote_conf = read_issho_conf(profile)
         self.ssh_conf = self._get_issho_ssh_config()
         self.hostname = self.ssh_conf['hostname']
         self.port = int(self.ssh_conf['port'])
@@ -34,18 +34,29 @@ class Issho:
         return
 
     def _get_pkey(self):
+        """
+        Helper for getting an RSA key
+        """
         key_file = absolute_path(self.key_path)
         return paramiko.RSAKey.from_private_key_file(
             key_file, password=keyring.get_password('SSH', key_file))
 
     def _get_issho_ssh_config(self):
+        """
+        Helper method for getting data from .ssh/config
+        """
         ssh_config_file = absolute_path(self.ssh_config_path)
         conf = paramiko.SSHConfig()
         conf.parse(open(ssh_config_file))
-        issho_conf = conf.lookup(self.host)
+        issho_conf = conf.lookup(self.profile)
         return issho_conf
 
     def local_forward(self, remote_host, remote_port, local_host='0.0.0.0', local_port=44556):
+        """
+        Forwards a port from a remote through this Issho object.
+        Useful for connecting to remote hosts that can only be accessed
+        from inside a VPC of which your devbox is part.
+        """
         tunnel = SSHTunnelForwarder(
             (self.hostname, self.port),
             ssh_username=self.user,
@@ -56,6 +67,10 @@ class Issho:
         return tunnel
 
     def _connect(self):
+        """
+        Uses paramiko to connect to the remote specified
+        :return:
+        """
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(self.hostname,
@@ -65,6 +80,19 @@ class Issho:
         return ssh
 
     def exec(self, cmd, bg=False, debug=False, capture_output=False):
+        """
+        Executes a command in bash over the SSH connection
+
+        Note, this command does not use an interactive terminal;
+        it instead uses a *non-interactive login* shell.
+        This means (specifically) that your aliased commands will not work
+        and
+        :param cmd:
+        :param bg:
+        :param debug:
+        :param capture_output:
+        :return:
+        """
         if bg:
             cmd = 'cmd=$"{}"; nohup bash -c "$cmd" &'.format(cmd.replace('"', r'\"'))
         if debug:
@@ -101,7 +129,7 @@ class Issho:
         return
 
     def kinit(self):
-        kinit_pw = keyring.get_password('{}_kinit'.format(self.host), self.user)
+        kinit_pw = keyring.get_password('{}_kinit'.format(self.profile), self.user)
         if kinit_pw:
             self.exec('echo {} | kinit'.format(kinit_pw))
         else:
