@@ -6,6 +6,7 @@ import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
 from issho.helpers import absolute_path, default_sftp_path
+from issho.config import read_issho_conf
 import sys
 import time
 
@@ -13,13 +14,13 @@ class Issho:
 
     def __init__(self,
                  key_path='~/.ssh/id_rsa',
-                 config_path="~/.ssh/config",
+                 ssh_config_path="~/.ssh/config",
                  host='dev',
                  kinit=True):
         self.key_path = key_path
-        self.config_path = config_path
+        self.ssh_config_path = ssh_config_path
         self.host = host
-        self.remote_conf =
+        self.remote_conf = read_issho_conf(host)
         self.ssh_conf = self._get_issho_ssh_config()
         self.hostname = self.ssh_conf['hostname']
         self.port = int(self.ssh_conf['port'])
@@ -37,7 +38,7 @@ class Issho:
             key_file, password=keyring.get_password('SSH', key_file))
 
     def _get_issho_ssh_config(self):
-        ssh_config_file = absolute_path(self.config_path)
+        ssh_config_file = absolute_path(self.ssh_config_path)
         conf = paramiko.SSHConfig()
         conf.parse(open(ssh_config_file))
         issho_conf = conf.lookup(self.host)

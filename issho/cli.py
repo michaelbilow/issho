@@ -1,11 +1,13 @@
 from prompt_toolkit import prompt
 import keyring
-from issho.config import read_issho_conf, write_issho_conf
+from issho.config import write_issho_conf
+import os
+
 
 def main():
-    profile = prompt('What is the name of this profile in your ssh config? ')
+    profile = prompt('What is the name of the profile? ')
     while True:
-        pw = prompt('Enter the kinit password: ', is_password=True)
+        pw = prompt("Enter the profile's kinit password: ", is_password=True)
         if not pw:
             break
         pw2 = prompt('Enter the kinit password again: ', is_password=True)
@@ -16,9 +18,15 @@ def main():
             break
 
     hive_opts = prompt('Hive Options: ')
-    jdbc_conn = prompt('JDBC connection string: ')
+    hive_jdbc = prompt('Hive JDBC connection string: ')
+    spark_shell_conf = prompt('Spark Shell Configuration String: ')
 
-
+    new_conf = {
+      'HIVE_OPTS': hive_opts,
+      'HIVE_JDBC': hive_jdbc,
+      'SPARK_CONF': spark_shell_conf
+    }
+    write_issho_conf({profile: new_conf})
 
 
 if __name__ == "__main__":
