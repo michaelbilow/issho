@@ -9,6 +9,7 @@ from issho.helpers import absolute_path, default_sftp_path
 from issho.config import read_issho_conf
 import sys
 import time
+from shutil import copyfile
 
 
 class Issho:
@@ -109,8 +110,11 @@ class Issho:
 
     def hive(self, query):
         tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
-        with open(tmp_filename, 'w') as f:
-            f.write(query)
+        if query.endswith('sql', 'hql'):
+            copyfile(query, tmp_filename)
+        else:
+            with open(tmp_filename, 'w') as f:
+                f.write(query)
         self.put(tmp_filename, tmp_filename)
 
         self.exec('beeline {opts} -u  "{jdbc}" -f {fn}'.format(
