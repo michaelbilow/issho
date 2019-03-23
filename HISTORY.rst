@@ -2,6 +2,11 @@
 History
 =======
 
+0.2.1 (2019-03-22)
+------------------
+* Add docstrings for all functions
+* Add autodocs
+
 0.2.0 (2019-03-22)
 ------------------
 * Add Hive function
