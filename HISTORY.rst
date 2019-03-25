@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.2 (2019-03-24)
+------------------
+* Clean up docs, try to have a passing build
+
 0.2.1 (2019-03-22)
 ------------------
 * Add docstrings for all functions

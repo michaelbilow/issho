@@ -4,8 +4,9 @@ import socket
 
 def absolute_path(raw_path):
     """
-    Gets the string absolute path from
-    :param raw_path: a string or pathlib.Path object
+    Gets the string absolute path from a path object or string.
+
+    :param raw_path: a string or ``pathlib.Path`` object
     """
     if not isinstance(raw_path, Path):
         raw_path = Path(raw_path)
@@ -15,7 +16,7 @@ def absolute_path(raw_path):
 def default_sftp_path(this_path, default_path):
     """
     If ``this_path`` exists, return it as a path, else, return
-    the pathlib.Path.name of the default path
+    the ``pathlib.Path.name`` of the default path
     """
     return Path(this_path) if this_path else Path(Path(default_path).name)
 

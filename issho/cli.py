@@ -15,7 +15,7 @@ class IsshoCLI:
         Configures a single issho profile.
 
         :param profile: name of the profile to configure; should
-        match the name in the ssh config.
+            match the name in the ssh config.
         """
 
         while True:

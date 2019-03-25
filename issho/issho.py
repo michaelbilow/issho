@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-"""Main module."""
+"""
+Implementation for the ``Issho`` class, which implements
+a connection and some simple commands over ``ssh``, using
+``keyring`` to manage secrets locally.
+"""
 
 import paramiko
 import keyring
@@ -81,12 +85,12 @@ class Issho:
 
     def exec(self, cmd, bg=False, debug=False, capture_output=False):
         """
-        Executes a command in bash over the SSH connection
+        Execute a command in bash over the SSH connection.
 
         Note, this command does not use an interactive terminal;
         it instead uses a *non-interactive login* shell.
         This means (specifically) that your aliased commands will not work
-        and only variables exported in your remote .bashrc will be available.
+        and only variables exported in your remote ``.bashrc`` will be available.
 
         :param cmd: The bash command to be run remotely
 
@@ -117,13 +121,13 @@ class Issho:
 
     def exec_bg(self, cmd, **kwargs):
         """
-        Syntactic sugar for exec(bg=True)
+        Syntactic sugar for ``exec(bg=True)``
         """
         return self.exec(cmd, bg=True, **kwargs)
 
     def get_output(self, cmd, **kwargs):
         """
-        Syntactic sugar for exec(capture_output=True)
+        Syntactic sugar for ``exec(capture_output=True)``
         """
         return self.exec(cmd, capture_output=True, **kwargs)
 
@@ -170,7 +174,7 @@ class Issho:
         set in .issho/config.toml
 
         :param query: a string query, or the name of a query file
-        name to run.
+            name to run.
         """
         tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
         if query.endswith('sql', 'hql'):
