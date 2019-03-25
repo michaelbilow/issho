@@ -197,7 +197,7 @@ class Issho:
                 'remotepath': str(remotepath).replace('~', self._remote_home_dir)}
 
     @staticmethod
-    def _sftp_progress(transferred, remaining):
-        print('{} transferred, {} remaining'.format(humanize.naturalsize(transferred),
-                                                    humanize.naturalsize(remaining))
+    def _sftp_progress(transferred, to_transfer):
+        print('{} transferred out of a total of {}'.format(humanize.naturalsize(transferred),
+                                                           humanize.naturalsize(to_transfer)))
 

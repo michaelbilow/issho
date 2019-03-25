@@ -2,6 +2,12 @@
 History
 =======
 
+0.2.5 (2019-03-25)
+------------------
+* Clean up hive operator and sftp callback
+* Note that ``issho`` is incompatible with ``jupyter_console<6.0`` and ``ipython<7.0``
+
+
 0.2.4 (2019-03-25)
 ------------------
 * Fix bug in hive operator
