@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.4 (2019-03-25)
+------------------
+* Fix bug in hive operator
+
 0.2.3 (2019-03-25)
 ------------------
 * Add ``.readthedocs.yml``; docs build now passes.
