@@ -6,6 +6,7 @@ History
 ------------------
 * Add docstrings for all functions
 * Add autodocs
+* Switch out ``bumpversion`` for ``bump2version``
 
 0.2.0 (2019-03-22)
 ------------------
