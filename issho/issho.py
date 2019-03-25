@@ -176,8 +176,9 @@ class Issho:
         :param query: a string query, or the name of a query file
             name to run.
         """
+        query = str(query)
         tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
-        if query.endswith('sql', 'hql'):
+        if query.endswith('sql') or query.endswith('hql'):
             copyfile(query, tmp_filename)
         else:
             with open(tmp_filename, 'w') as f:
