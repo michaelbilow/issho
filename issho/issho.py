@@ -14,7 +14,7 @@ from issho.config import read_issho_conf
 import sys
 import time
 from shutil import copyfile
-
+import humanize
 
 class Issho:
 
@@ -198,5 +198,6 @@ class Issho:
 
     @staticmethod
     def _sftp_progress(transferred, remaining):
-        print('{:.1f} MB transferred, {:.1f} MB remaining'.format(transferred/2**20, remaining/2**20))
+        print('{} transferred, {} remaining'.format(humanize.naturalsize(transferred),
+                                                    humanize.naturalsize(remaining))
 
