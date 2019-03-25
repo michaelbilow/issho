@@ -155,8 +155,8 @@ texinfo_documents = [
      u'issho Documentation',
      author,
      'issho',
-     'One line description of project.',
-     'Miscellaneous'),
+     'Simple connections & command execution with a remote host.',
+     'issho Documentation'),
 ]
 
 
