@@ -2,6 +2,10 @@
 History
 =======
 
+0.2.3 (2019-03-25)
+------------------
+* Add ``.readthedocs.yml``; docs build now passes.
+
 0.2.2 (2019-03-24)
 ------------------
 * Clean up docs, try to have a passing build
