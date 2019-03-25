@@ -1,4 +1,4 @@
-Welcome to smol's documentation!
+Welcome to issho's documentation!
 ======================================
 
 .. toctree::
@@ -7,6 +7,7 @@ Welcome to smol's documentation!
 
    readme
    installation
+   setup
    usage
    modules
    contributing

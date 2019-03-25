@@ -1,5 +1,5 @@
 pip==19.0.3
-bumpversion==0.5.3
+bump2version==0.5.10
 wheel==0.33.1
 watchdog==0.9.0
 flake8==3.7.7
@@ -7,5 +7,10 @@ tox==3.7.0
 coverage==4.5.2
 Sphinx==1.8.4
 twine==1.13.0
-
-
+sshtunnel>=0.1.4
+keyring>=18.0.0
+paramiko>=2.4.0
+cryptography==2.4.2
+prompt_toolkit>=2.0.5
+toml>=0.10.0
+fire>=0.1.3

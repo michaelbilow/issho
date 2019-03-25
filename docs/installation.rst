@@ -8,13 +8,13 @@ Installation
 Stable release
 --------------
 
-To install smol, run this command in your terminal:
+To install issho, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install smol
+    $ pip install issho
 
-This is the preferred method to install smol, as it will always install the most recent stable release.
+This is the preferred method to install issho, as it will always install the most recent stable release.
 
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
@@ -26,19 +26,19 @@ you through the process.
 From sources
 ------------
 
-The sources for smol can be downloaded from the `Github repo`_.
+The sources for issho can be downloaded from the `Github repo`_.
 
 You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/michaelbilow/smol
+    $ git clone git://github.com/michaelbilow/issho
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/michaelbilow/smol/tarball/master
+    $ curl  -OL https://github.com/michaelbilow/issho/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/michaelbilow/smol
-.. _tarball: https://github.com/michaelbilow/smol/tarball/master
+.. _Github repo: https://github.com/michaelbilow/issho
+.. _tarball: https://github.com/michaelbilow/issho/tarball/master
