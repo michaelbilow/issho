@@ -1,5 +1,7 @@
 import toml
+import paramiko
 from pathlib import Path
+from issho.helpers import absolute_path
 
 ISSHO_CONF_FILE = Path.home().joinpath('.issho').joinpath('conf.toml')
 
@@ -11,12 +13,12 @@ def _make_issho_conf_dir():
     return
 
 
-def read_issho_conf(host):
+def read_issho_conf(profile):
     _make_issho_conf_dir()
     conf = toml.load(ISSHO_CONF_FILE)
-    if host not in conf:
+    if profile not in conf:
         raise ValueError
-    return conf[host]
+    return conf[profile]
 
 
 def write_issho_conf(new_conf_dict):
@@ -25,3 +27,13 @@ def write_issho_conf(new_conf_dict):
     new_conf = {**old_issho_conf, **new_conf_dict}
     toml.dump(new_conf, open(str(ISSHO_CONF_FILE), 'w'))
     return
+
+
+def read_ssh_config(ssh_config_path):
+    """
+    Helper method for getting data from .ssh/config
+    """
+    ssh_config_file = absolute_path(ssh_config_path)
+    conf = paramiko.SSHConfig()
+    conf.parse(open(ssh_config_file))
+    return conf
