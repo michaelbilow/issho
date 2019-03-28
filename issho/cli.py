@@ -54,6 +54,14 @@ class IsshoCLI:
         }
         write_issho_conf({profile: new_conf})
 
+    def update_variable(self, profile, variable, value):
+        """
+        Updates or add a single profile variable.
+        """
+        old_conf = read_issho_conf(profile)
+        old_conf[variable] = value
+        write_issho_conf({profile: old_conf})
+
 
 def _get_pw(pw_type):
     """
