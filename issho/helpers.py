@@ -43,12 +43,18 @@ def get_pkey(key_path):
     """
     key_file = absolute_path(key_path)
     return paramiko.RSAKey.from_private_key_file(
-        key_file, password=keyring.get_password(ssh_pw_name(key_path), key_file))
+        key_file, password=keyring.get_password(issho_ssh_pw_name(key_path), key_file))
 
 
 def issho_pw_name(pw_type, profile):
+    """
+    Helper for standardizing password names
+    """
     return 'issho_{}_{}'.format(pw_type, profile)
 
 
-def ssh_pw_name(rsa_id):
+def issho_ssh_pw_name(rsa_id):
+    """
+    Helper for standardizing ssh password names
+    """
     return 'issho_ssh_{}'.format(''.join(ch for ch in rsa_id if ch.isalnum()))

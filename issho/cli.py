@@ -1,7 +1,7 @@
 from prompt_toolkit import prompt
 import keyring
 from issho.config import write_issho_conf, read_issho_conf, read_ssh_config
-from issho.helpers import issho_pw_name, ssh_pw_name, absolute_path
+from issho.helpers import issho_pw_name, issho_ssh_pw_name, absolute_path
 import os
 import fire
 
@@ -34,7 +34,7 @@ class IsshoCLI:
         if not all(x in ssh_conf.lookup(ssh_profile) for x in ('hostname', 'user')):
             raise KeyError()
 
-        if not keyring.get_password(ssh_pw_name(rsa_id), absolute_path(rsa_id)):
+        if not keyring.get_password(issho_ssh_pw_name(rsa_id), absolute_path(rsa_id)):
             _set_up_ssh_password(rsa_id=rsa_id)
 
         _set_up_password(pw_type='kinit',
@@ -56,6 +56,9 @@ class IsshoCLI:
 
 
 def _get_pw(pw_type):
+    """
+    Gets a password using the prompt toolkit
+    """
     while True:
         pw = prompt("Enter the {} password: ".format(pw_type), is_password=True)
         if not pw:
@@ -68,6 +71,10 @@ def _get_pw(pw_type):
 
 
 def _set_up_password(pw_type, profile, pw_user):
+    """
+    Gets an issho password for this profile and
+    saves it to the local keyring.
+    """
     pw = _get_pw(pw_type=pw_type)
     pw_name = issho_pw_name(pw_type=pw_type, profile=profile)
     keyring.set_password(pw_name, pw_user, pw)
@@ -75,8 +82,11 @@ def _set_up_password(pw_type, profile, pw_user):
 
 
 def _set_up_ssh_password(rsa_id):
+    """
+    Adds the ssh password to the local keyring.
+    """
     pw = _get_pw(pw_type='ssh')
-    pw_name = ssh_pw_name(rsa_id=rsa_id)
+    pw_name = issho_ssh_pw_name(rsa_id=rsa_id)
     keyring.set_password(pw_name, rsa_id, pw)
     return
 

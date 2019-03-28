@@ -2,6 +2,11 @@
 History
 =======
 
+Unreleased
+----------
+* Add more configuration and reduce variables on the ``Issho`` object.
+* Allow ``prompt_toolkit>=1.0.10`` to allow ``jupyter`` interoperability.
+
 0.2.5 (2019-03-25)
 ------------------
 * Clean up hive operator and sftp callback
