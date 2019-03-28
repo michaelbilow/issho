@@ -3,6 +3,7 @@ import socket
 import paramiko
 import keyring
 
+
 def absolute_path(raw_path):
     """
     Gets the string absolute path from a path object or string.
@@ -41,14 +42,13 @@ def get_pkey(key_path):
     Helper for getting an RSA key
     """
     key_file = absolute_path(key_path)
-    key_profile = ''.join(ch for ch in key_path if ch.isalnum())
     return paramiko.RSAKey.from_private_key_file(
-        key_file, password=keyring.get_password(
-            issho_pw_name(pw_type='SSH', profile=key_profile), key_file))
+        key_file, password=keyring.get_password(ssh_pw_name(key_path), key_file))
 
 
 def issho_pw_name(pw_type, profile):
     return 'issho_{}_{}'.format(pw_type, profile)
 
+
 def ssh_pw_name(rsa_id):
-    return 'issho_'
+    return 'issho_ssh_{}'.format(''.join(ch for ch in rsa_id if ch.isalnum()))

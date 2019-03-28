@@ -1,7 +1,7 @@
 from prompt_toolkit import prompt
 import keyring
 from issho.config import write_issho_conf, read_issho_conf, read_ssh_config
-from issho.helpers import issho_pw_name, ssh_pw_name
+from issho.helpers import issho_pw_name, ssh_pw_name, absolute_path
 import os
 import fire
 
@@ -34,35 +34,51 @@ class IsshoCLI:
         if not all(x in ssh_conf.lookup(ssh_profile) for x in ('hostname', 'user')):
             raise KeyError()
 
-        if not keyring.get_password(ssh_pw_name(rsa_id))
+        if not keyring.get_password(ssh_pw_name(rsa_id), absolute_path(rsa_id)):
+            _set_up_ssh_password(rsa_id=rsa_id)
 
-        while True:
-            pw = prompt("Enter the profile's kinit password: ", is_password=True)
-            if not pw:
-                break
-            pw2 = prompt('Enter the kinit password again: ', is_password=True)
-            if pw != pw2:
-                print('passwords do not match')
-            else:
-                keyring.set_password(issho_pw_name(pw_type='kinit', profile=profile),
-                                     local_user, pw)
-                break
+        _set_up_password(pw_type='kinit',
+                         profile=profile,
+                         pw_user=local_user)
 
         hive_opts = prompt('Hive Options: ')
         hive_jdbc = prompt('Hive JDBC connection string: ')
         spark_shell_conf = prompt('Spark Shell Configuration String: ')
 
         new_conf = {
-
             'HIVE_OPTS': hive_opts,
             'HIVE_JDBC': hive_jdbc,
-            'SPARK_CONF': spark_shell_conf
+            'SPARK_CONF': spark_shell_conf,
+            'SSH_CONFIG_PATH': ssh_config,
+            'RSA_ID_PATH': rsa_id
         }
         write_issho_conf({profile: new_conf})
 
-    def set_variable(self, profile, var_name):
-        old_issho_config = read_issho_conf(profile)
 
+def _get_pw(pw_type):
+    while True:
+        pw = prompt("Enter the {} password: ".format(pw_type), is_password=True)
+        if not pw:
+            break
+        pw2 = prompt('Enter the {} password again: '.format(pw_type), is_password=True)
+        if pw != pw2:
+            print('The passwords do not match; try again')
+        else:
+            return pw
+
+
+def _set_up_password(pw_type, profile, pw_user):
+    pw = _get_pw(pw_type=pw_type)
+    pw_name = issho_pw_name(pw_type=pw_type, profile=profile)
+    keyring.set_password(pw_name, pw_user, pw)
+    return
+
+
+def _set_up_ssh_password(rsa_id):
+    pw = _get_pw(pw_type='ssh')
+    pw_name = ssh_pw_name(rsa_id=rsa_id)
+    keyring.set_password(pw_name, rsa_id, pw)
+    return
 
 
 def main():
