@@ -29,11 +29,11 @@ def write_issho_conf(new_conf_dict):
     return
 
 
-def read_ssh_config(ssh_config_path):
+def read_ssh_profile(ssh_config_path, profile):
     """
     Helper method for getting data from .ssh/config
     """
     ssh_config_file = absolute_path(ssh_config_path)
     conf = paramiko.SSHConfig()
     conf.parse(open(ssh_config_file))
-    return conf
+    return conf.lookup(profile)

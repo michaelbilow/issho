@@ -1,6 +1,6 @@
 from prompt_toolkit import prompt
 import keyring
-from issho.config import write_issho_conf, read_issho_conf, read_ssh_config
+from issho.config import write_issho_conf, read_issho_conf, read_ssh_profile
 from issho.helpers import issho_pw_name, issho_ssh_pw_name, absolute_path
 import os
 import fire
@@ -29,12 +29,13 @@ class IsshoCLI:
 
         local_user = os.environ.get('USER')
         ssh_profile = profile if not ssh_profile else profile
+        rsa_id = absolute_path(rsa_id)
 
-        ssh_conf = read_ssh_config(ssh_config)
-        if not all(x in ssh_conf.lookup(ssh_profile) for x in ('hostname', 'user')):
+        ssh_conf = read_ssh_profile(ssh_config, ssh_profile)
+        if not all(x in ssh_conf for x in ('hostname', 'user')):
             raise KeyError()
 
-        if not keyring.get_password(issho_ssh_pw_name(rsa_id), absolute_path(rsa_id)):
+        if not keyring.get_password(issho_ssh_pw_name(rsa_id), rsa_id):
             _set_up_ssh_password(rsa_id=rsa_id)
 
         _set_up_password(pw_type='kinit',

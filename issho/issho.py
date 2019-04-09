@@ -10,7 +10,7 @@ import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
 from issho.helpers import default_sftp_path, get_pkey, issho_pw_name
-from issho.config import read_issho_conf, read_ssh_config
+from issho.config import read_issho_conf, read_ssh_profile
 import sys
 import time
 from shutil import copyfile
@@ -22,9 +22,9 @@ class Issho:
     def __init__(self, profile='dev', kinit=True):
         self.profile = profile
         self.issho_conf = read_issho_conf(profile)
-        self.ssh_conf = read_ssh_config(self.issho_conf['ssh_config_path'])
-        self.hostname = self.ssh_conf['hostname']
-        self.user = self.ssh_conf['user']
+        self.ssh_conf = read_ssh_profile(self.issho_conf['SSH_CONFIG_PATH'], profile)
+        self.hostname = self.ssh_conf.get('hostname', None)
+        self.user = self.ssh_conf.get('user', None)
         self.port = self.ssh_conf.get('port', 22)
         self._ssh = self._connect()
         if kinit:
@@ -41,7 +41,7 @@ class Issho:
         tunnel = SSHTunnelForwarder(
             (self.hostname, self.port),
             ssh_username=self.user,
-            ssh_pkey=get_pkey(self.issho_conf['id_rsa']),
+            ssh_pkey=get_pkey(self.issho_conf['ID_RSA']),
             remote_bind_address=(remote_host, remote_port),
             local_bind_address=(local_host, local_port))
         tunnel.start()
@@ -171,7 +171,7 @@ class Issho:
         ssh.connect(self.hostname,
                     username=self.user,
                     port=self.port,
-                    pkey=get_pkey(self.issho_conf['id_rsa']))
+                    pkey=get_pkey(self.issho_conf['RSA_ID_PATH']))
         return ssh
 
     def _sftp_paths(self, localpath, remotepath):
