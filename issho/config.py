@@ -22,6 +22,9 @@ def read_issho_conf(profile):
 
 
 def write_issho_conf(new_conf_dict):
+    """
+    Updates the issho config file
+    """
     _make_issho_conf_dir()
     old_issho_conf = toml.load(ISSHO_CONF_FILE)
     new_conf = {**old_issho_conf, **new_conf_dict}
