@@ -9,51 +9,28 @@ a connection and some simple commands over ``ssh``, using
 import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
-from issho.helpers import absolute_path, default_sftp_path
-from issho.config import read_issho_conf
+from issho.helpers import default_sftp_path, get_pkey, issho_pw_name
+from issho.config import read_issho_conf, read_ssh_profile
 import sys
 import time
 from shutil import copyfile
 import humanize
 
+
 class Issho:
 
-    def __init__(self,
-                 key_path='~/.ssh/id_rsa',
-                 ssh_config_path="~/.ssh/config",
-                 profile='dev',
-                 kinit=True):
-        self.key_path = key_path
-        self.ssh_config_path = ssh_config_path
+    def __init__(self, profile='dev', kinit=True):
         self.profile = profile
-        self.remote_conf = read_issho_conf(profile)
-        self.ssh_conf = self._get_issho_ssh_config()
-        self.hostname = self.ssh_conf['hostname']
-        self.port = int(self.ssh_conf['port'])
-        self.user = self.ssh_conf['user']
+        self.issho_conf = read_issho_conf(profile)
+        self.ssh_conf = read_ssh_profile(self.issho_conf['SSH_CONFIG_PATH'], profile)
+        self.hostname = self.ssh_conf.get('hostname', None)
+        self.user = self.ssh_conf.get('user', None)
+        self.port = self.ssh_conf.get('port', 22)
         self._ssh = self._connect()
         if kinit:
             self.kinit()
         self._remote_home_dir = self.get_output('echo $HOME').strip()
         return
-
-    def _get_pkey(self):
-        """
-        Helper for getting an RSA key
-        """
-        key_file = absolute_path(self.key_path)
-        return paramiko.RSAKey.from_private_key_file(
-            key_file, password=keyring.get_password('SSH', key_file))
-
-    def _get_issho_ssh_config(self):
-        """
-        Helper method for getting data from .ssh/config
-        """
-        ssh_config_file = absolute_path(self.ssh_config_path)
-        conf = paramiko.SSHConfig()
-        conf.parse(open(ssh_config_file))
-        issho_conf = conf.lookup(self.profile)
-        return issho_conf
 
     def local_forward(self, remote_host, remote_port, local_host='0.0.0.0', local_port=44556):
         """
@@ -64,24 +41,11 @@ class Issho:
         tunnel = SSHTunnelForwarder(
             (self.hostname, self.port),
             ssh_username=self.user,
-            ssh_pkey=self._get_pkey(),
+            ssh_pkey=get_pkey(self.issho_conf['ID_RSA']),
             remote_bind_address=(remote_host, remote_port),
             local_bind_address=(local_host, local_port))
         tunnel.start()
         return tunnel
-
-    def _connect(self):
-        """
-        Uses paramiko to connect to the remote specified
-        :return:
-        """
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.hostname,
-                    username=self.user,
-                    port=self.port,
-                    pkey=self._get_pkey())
-        return ssh
 
     def exec(self, cmd, bg=False, debug=False, capture_output=False):
         """
@@ -141,7 +105,9 @@ class Issho:
         """
         paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
         with self._ssh.open_sftp() as sftp:
-            sftp.get(remotepath=paths['remotepath'], localpath=paths['localpath'])
+            sftp.get(remotepath=paths['remotepath'],
+                     localpath=paths['localpath'],
+                     callback=self._sftp_progress)
         return
 
     def put(self, localpath, remotepath=None):
@@ -154,18 +120,23 @@ class Issho:
         """
         paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
         with self._ssh.open_sftp() as sftp:
-            sftp.put(localpath=paths['localpath'], remotepath=paths['remotepath'], callback=self._sftp_progress)
+            sftp.put(localpath=paths['localpath'],
+                     remotepath=paths['remotepath'],
+                     callback=self._sftp_progress)
         return
 
     def kinit(self):
         """
         Runs kerberos init
         """
-        kinit_pw = keyring.get_password('{}_kinit'.format(self.profile), self.user)
+        kinit_pw = keyring.get_password(
+            issho_pw_name(pw_type='kinit', profile=self.profile),
+            self.user)
         if kinit_pw:
             self.exec('echo {} | kinit'.format(kinit_pw))
         else:
-            raise OSError("Add your kinit password to your keyring")
+            raise OSError("Add your kinit password with `issho config <profile>` "
+                          "or by editing `~/.issho/config.toml`")
         return
 
     def hive(self, query):
@@ -186,9 +157,22 @@ class Issho:
         self.put(tmp_filename, tmp_filename)
 
         self.exec('beeline {opts} -u  "{jdbc}" -f {fn}'.format(
-            opts=self.remote_conf['HIVE_OPTS'],
-            jdbc=self.remote_conf['HIVE_JDBC'],
+            opts=self.issho_conf['HIVE_OPTS'],
+            jdbc=self.issho_conf['HIVE_JDBC'],
             fn=tmp_filename))
+
+    def _connect(self):
+        """
+        Uses paramiko to connect to the remote specified
+        :return:
+        """
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self.hostname,
+                    username=self.user,
+                    port=self.port,
+                    pkey=get_pkey(self.issho_conf['RSA_ID_PATH']))
+        return ssh
 
     def _sftp_paths(self, localpath, remotepath):
         localpath = default_sftp_path(localpath, remotepath)
@@ -198,6 +182,6 @@ class Issho:
 
     @staticmethod
     def _sftp_progress(transferred, to_transfer):
-        print('{} transferred out of a total of {}'.format(humanize.naturalsize(transferred),
-                                                           humanize.naturalsize(to_transfer)))
+        print('{} transferred out of a total of {}'.format(
+            humanize.naturalsize(transferred), humanize.naturalsize(to_transfer)))
 
