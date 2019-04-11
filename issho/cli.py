@@ -30,6 +30,7 @@ class IsshoCLI:
         local_user = os.environ.get('USER')
         ssh_profile = profile if not ssh_profile else profile
         rsa_id = absolute_path(rsa_id)
+        ssh_config = absolute_path(ssh_config)
 
         ssh_conf = read_ssh_profile(ssh_config, ssh_profile)
         if not all(x in ssh_conf for x in ('hostname', 'user')):
