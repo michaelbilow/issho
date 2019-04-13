@@ -9,7 +9,7 @@ a connection and some simple commands over ``ssh``, using
 import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
-from issho.helpers import default_sftp_path, get_pkey, issho_pw_name
+from issho.helpers import default_sftp_path, get_pkey, issho_pw_name, get_user
 from issho.config import read_issho_conf, read_ssh_profile
 import sys
 import time
@@ -20,6 +20,7 @@ import humanize
 class Issho:
 
     def __init__(self, profile='dev', kinit=True):
+        self.local_user = get_user()
         self.profile = profile
         self.issho_conf = read_issho_conf(profile)
         self.ssh_conf = read_ssh_profile(self.issho_conf['SSH_CONFIG_PATH'], profile)
@@ -129,9 +130,7 @@ class Issho:
         """
         Runs kerberos init
         """
-        kinit_pw = keyring.get_password(
-            issho_pw_name(pw_type='kinit', profile=self.profile),
-            self.user)
+        kinit_pw = self._get_password('kinit')
         if kinit_pw:
             self.exec('echo {} | kinit'.format(kinit_pw))
         else:
@@ -184,4 +183,9 @@ class Issho:
     def _sftp_progress(transferred, to_transfer):
         print('{} transferred out of a total of {}'.format(
             humanize.naturalsize(transferred), humanize.naturalsize(to_transfer)))
+
+    def _get_password(self, pw_type):
+        return keyring.get_password(
+            issho_pw_name(pw_type=pw_type, profile=self.profile),
+            self.local_user)
 

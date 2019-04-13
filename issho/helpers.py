@@ -2,6 +2,7 @@ from pathlib import Path
 import socket
 import paramiko
 import keyring
+import os
 
 
 def absolute_path(raw_path):
@@ -58,3 +59,7 @@ def issho_ssh_pw_name(rsa_id):
     Helper for standardizing ssh password names
     """
     return 'issho_ssh_{}'.format(''.join(ch for ch in absolute_path(rsa_id) if ch.isalnum()))
+
+
+def get_user():
+    return os.environ.get('USER')

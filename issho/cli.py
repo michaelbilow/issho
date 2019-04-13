@@ -1,8 +1,9 @@
 from prompt_toolkit import prompt
 import keyring
-from issho.config import write_issho_conf, read_issho_conf, read_ssh_profile
-from issho.helpers import issho_pw_name, issho_ssh_pw_name, absolute_path
-import os
+from issho.config import write_issho_conf, read_issho_conf, \
+    read_ssh_profile
+from issho.helpers import issho_pw_name, issho_ssh_pw_name,\
+    absolute_path, get_user
 import fire
 
 
@@ -27,7 +28,7 @@ class IsshoCLI:
         :param rsa_id: the path to the id_rsa file to be used for this profile
         """
 
-        local_user = os.environ.get('USER')
+        local_user = get_user()
         ssh_profile = profile if not ssh_profile else profile
         rsa_id = absolute_path(rsa_id)
         ssh_config = absolute_path(ssh_config)

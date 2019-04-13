@@ -2,6 +2,10 @@
 History
 =======
 
+0.3.1 (2019-04-11)
+------------------
+* Fix bug regarding ssh vs local user identity
+
 0.3.0 (2019-04-09)
 ------------------
 * Add more configuration and reduce variables on the ``Issho`` object.
