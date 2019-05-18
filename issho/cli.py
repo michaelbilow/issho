@@ -6,7 +6,14 @@ from issho.helpers import issho_pw_name, issho_ssh_pw_name,\
     absolute_path, get_user
 from issho.issho import Issho
 import fire
+import re
 
+OPENSSH_PASSWORD_ERROR = '''
+Paramiko v2.4.0 does not allow OpenSSH RSA key format (common on new Macs);
+see: https://github.com/paramiko/paramiko/issues/1313#issuecomment-492448807
+Create your ssh key using:
+$ ssh-keygen -t rsa -b 4096 -C "email@email.com" -m PEM
+'''
 
 class IsshoCLI:
     """
@@ -107,10 +114,17 @@ def _set_up_ssh_password(rsa_id):
     """
     Adds the ssh password to the local keyring.
     """
+    _check_not_openssh_pkey(rsa_id)
     pw = _get_pw(pw_type='ssh')
     pw_name = issho_ssh_pw_name(rsa_id=rsa_id)
     keyring.set_password(pw_name, rsa_id, pw)
     return True if pw else False
+
+
+def _check_not_openssh_pkey(rsa_id):
+    with open(rsa_id) as f:
+        if re.search('OPENSSH', f.readline()):
+            raise ValueError(OPENSSH_PASSWORD_ERROR)
 
 
 def main():
