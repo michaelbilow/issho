@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.3 (2019-05-18)
+------------------
+* Fix bug related to paramiko v2.4 not liking the Mac version of ssh keys.
+* Added clear error messages to fix.
+
 0.3.1 (2019-04-11)
 ------------------
 * Fix bug regarding ssh vs local user identity

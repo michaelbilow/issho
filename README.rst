@@ -58,6 +58,8 @@ framework is inspired by `Colin Wood`_'s sshed_.
 Shout out to `Spencer Tipping`_, `Neal Fultz`_, and `Factual`_
 for helping me learn to write my own tools.
 
+Thanks to _`Michael Vertuli` for helping test.
+
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 .. _paramiko: http://www.paramiko.org/
@@ -68,4 +70,5 @@ for helping me learn to write my own tools.
 .. _Colin Wood: https://github.com/cwood
 .. _Spencer Tipping: https://github.com/spencertipping
 .. _Neal Fultz: https://github.com/nfultz
+.. _Michael Vertuli: https://github.com/vertuli
 .. _Factual: https://www.factual.com
