@@ -4,6 +4,7 @@ from issho.config import write_issho_conf, read_issho_conf, \
     read_ssh_profile
 from issho.helpers import issho_pw_name, issho_ssh_pw_name,\
     absolute_path, get_user
+from issho.issho import Issho
 import fire
 
 
@@ -40,7 +41,7 @@ class IsshoCLI:
         if not keyring.get_password(issho_ssh_pw_name(rsa_id), rsa_id):
             _set_up_ssh_password(rsa_id=rsa_id)
 
-        _set_up_password(pw_type='kinit',
+        kinit_was_setup = _set_up_password(pw_type='kinit',
                          profile=profile,
                          pw_user=local_user)
 
@@ -56,14 +57,24 @@ class IsshoCLI:
             'RSA_ID_PATH': rsa_id
         }
         write_issho_conf({profile: new_conf})
+        self.test_connection(profile, kinit=kinit_was_setup)
 
-    def update_variable(self, profile, variable, value):
+    @staticmethod
+    def update_variable(profile, variable, value):
         """
         Updates or add a single profile variable.
         """
         old_conf = read_issho_conf(profile)
         old_conf[variable] = value
         write_issho_conf({profile: old_conf})
+
+    @staticmethod
+    def test_connection(profile, kinit=True):
+        try:
+            test_issho = Issho(profile, kinit)
+        except Exception as e:
+            return 'Test Connection failed with error: {}'.format(str(e))
+        return 'Test Connection Successful!'
 
 
 def _get_pw(pw_type):
@@ -89,7 +100,7 @@ def _set_up_password(pw_type, profile, pw_user):
     pw = _get_pw(pw_type=pw_type)
     pw_name = issho_pw_name(pw_type=pw_type, profile=profile)
     keyring.set_password(pw_name, pw_user, pw)
-    return
+    return True if pw else False
 
 
 def _set_up_ssh_password(rsa_id):
@@ -99,7 +110,7 @@ def _set_up_ssh_password(rsa_id):
     pw = _get_pw(pw_type='ssh')
     pw_name = issho_ssh_pw_name(rsa_id=rsa_id)
     keyring.set_password(pw_name, rsa_id, pw)
-    return
+    return True if pw else False
 
 
 def main():
