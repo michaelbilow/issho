@@ -138,7 +138,7 @@ class Issho:
                           "or by editing `~/.issho/config.toml`")
         return
 
-    def hive(self, query, output_filename=None):
+    def hive(self, query, output_filename=None, remove_blank_top_line=True):
         """
         Runs a hive query using the parameters
         set in .issho/config.toml
@@ -148,6 +148,8 @@ class Issho:
         :param output_filename: the (local) file to output the results
             of the hive query to. Adding this option will also
             keep a copy of the results in /tmp
+        :param remove_blank_top_line: Hive usually has a blank top line
+            when data is output, this parameter removes it.
         """
         query = str(query)
         tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
@@ -160,10 +162,11 @@ class Issho:
 
         tmp_output_filename = '{}.output'.format(tmp_filename)
 
-        hive_cmd = 'beeline {opts} -u  "{jdbc}" -f {fn} {redirect_to_tmp_fn}'.format(
+        hive_cmd = 'beeline {opts} -u  "{jdbc}" -f {fn} {remove_first_line} {redirect_to_tmp_fn}'.format(
             opts=self.issho_conf['HIVE_OPTS'],
             jdbc=self.issho_conf['HIVE_JDBC'],
             fn=tmp_filename,
+            remove_first_line="| sed 1d" if remove_blank_top_line else '',
             redirect_to_tmp_fn='> {}'.format(tmp_output_filename) if output_filename else '')
 
         self.exec(hive_cmd)

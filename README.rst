@@ -58,7 +58,7 @@ framework is inspired by `Colin Wood`_'s sshed_.
 Shout out to `Spencer Tipping`_, `Neal Fultz`_, and `Factual`_
 for helping me learn to write my own tools.
 
-Thanks to _`Michael Vertuli` for helping test.
+Thanks to `Michael Vertuli`_ for helping test.
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
