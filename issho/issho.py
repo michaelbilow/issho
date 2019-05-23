@@ -138,13 +138,16 @@ class Issho:
                           "or by editing `~/.issho/config.toml`")
         return
 
-    def hive(self, query):
+    def hive(self, query, output_filename=None):
         """
         Runs a hive query using the parameters
         set in .issho/config.toml
 
         :param query: a string query, or the name of a query file
             name to run.
+        :param output_filename: the (local) file to output the results
+            of the hive query to. Adding this option will also
+            keep a copy of the results in /tmp
         """
         query = str(query)
         tmp_filename = '/tmp/issho_{}.sql'.format(time.time())
@@ -155,10 +158,18 @@ class Issho:
                 f.write(query)
         self.put(tmp_filename, tmp_filename)
 
-        self.exec('beeline {opts} -u  "{jdbc}" -f {fn}'.format(
+        tmp_output_filename = '{}.output'.format(tmp_filename)
+
+        hive_cmd = 'beeline {opts} -u  "{jdbc}" -f {fn} {redirect_to_tmp_fn}'.format(
             opts=self.issho_conf['HIVE_OPTS'],
             jdbc=self.issho_conf['HIVE_JDBC'],
-            fn=tmp_filename))
+            fn=tmp_filename,
+            redirect_to_tmp_fn='> {}'.format(tmp_output_filename) if output_filename else '')
+
+        self.exec(hive_cmd)
+
+        if output_filename:
+            self.get(tmp_output_filename, output_filename)
 
     def _connect(self):
         """
