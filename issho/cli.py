@@ -51,7 +51,6 @@ class IsshoCLI:
         rsa_id = absolute_path(rsa_id)
         ssh_config = absolute_path(ssh_config)
         env = read_issho_env(env) if env else {}
-        print(env)
 
         ssh_conf = read_ssh_profile(ssh_config, ssh_profile)
         if not all(x in ssh_conf for x in ('hostname', 'user')):
@@ -73,12 +72,22 @@ class IsshoCLI:
         self.test_connection(profile, kinit=kinit_was_setup)
 
     @staticmethod
-    def env(name):
+    def env(env_name):
         """
         Saves a set of variables to ~/.issho/envs.toml
-        :param name: name of the environment to set up or update
+        :param env_name: name of the environment to set up or update
         """
-        env_conf = {name: _get_env_vars({})}
+        env_conf = {env_name: _get_env_vars({})}
+        write_issho_env(env_conf)
+        return env_conf
+
+    @staticmethod
+    def env(env_name):
+        """
+        Saves a set of variables to ~/.issho/envs.toml
+        :param env_name: name of the environment to set up or update
+        """
+        env_conf = {env_name: _get_env_vars({})}
         write_issho_env(env_conf)
         return env_conf
 
@@ -93,6 +102,12 @@ class IsshoCLI:
 
     @staticmethod
     def test_connection(profile, kinit=True):
+        """
+        Tests the connection to the specified
+        :param profile: The name of the profile
+        :param kinit: if True, will try to kinit using the stored password
+        :return:
+        """
         try:
             test_issho = Issho(profile, kinit)
         except Exception as e:
@@ -101,6 +116,14 @@ class IsshoCLI:
 
 
 def _get_env_vars(env):
+    """
+    Gets the set of parameters described in ENV_PROMPTS
+    using a pre-existing environment env if it exists
+
+    :param env: a dictionary containing previously-set environment variables
+
+    :return:
+    """
     return {var_name: env.get(var_name) if var_name in env else prompt(prompt_str)
             for var_name, prompt_str in ENV_PROMPTS.items()}
 
@@ -120,14 +143,28 @@ def _get_pw(pw_type):
             return pw
 
 
+def _keep_old_password(pw_type, pw_name, pw_user):
+    """
+    :return True to keep the old password, False to reset
+    """
+    if keyring.get_password(pw_name, pw_user):
+        new_pw_prompt = 'A {} password exists for {}--do you want to set a new password (y/N)? '
+        reset_password = prompt(new_pw_prompt.format(pw_type, pw_user))
+        return (not reset_password) or (not reset_password.strip().lower().startswith('y'))
+    return False
+
+
 def _set_up_password(pw_type, profile, pw_user):
     """
     Gets an issho password for this profile and
     saves it to the local keyring.
     """
-    pw = _get_pw(pw_type=pw_type)
     pw_name = issho_pw_name(pw_type=pw_type, profile=profile)
-    keyring.set_password(pw_name, pw_user, pw)
+    if _keep_old_password(pw_type, pw_name, pw_user):
+        return True if keyring.get_password(pw_name, pw_user) else False
+    else:
+        pw = _get_pw(pw_type=pw_type)
+        keyring.set_password(pw_name, pw_user, pw)
     return True if pw else False
 
 

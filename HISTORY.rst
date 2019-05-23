@@ -7,6 +7,7 @@ History
 * Allow hive to output to a file
 * Add environment variable profiles with ``issho env``
 * Update docs
+* Allow users to re-use already set variables.
 
 0.3.3 (2019-05-18)
 ------------------
