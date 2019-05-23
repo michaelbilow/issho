@@ -31,7 +31,7 @@ You can copy a file to or from your remote using ``put`` & ``get``::
 
     output_filename = 'test.txt'
     copy_back_filename = 'get_test.txt'
-    with open(output_file, 'w') as f:
+    with open(output_filename, 'w') as f:
         f.write('\n'.join(map(str, range(5))))
     devbox.put(output_filename)
     devbox.exec('cat {}'.format(output_filename))
@@ -46,6 +46,10 @@ Convenience Functions
 
     devbox.hive('select * from burgers limit 10;')
     devbox.hive('burger_query.sql')
+
+Results from hive queries can be output locally by passing an output_filename::
+
+    devbox.hive('select stack(3, "hello", "cruel", "world") as val;', "hello.tsv")
 
 
 .. _setup: ./setup.html

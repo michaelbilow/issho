@@ -1,9 +1,10 @@
 from prompt_toolkit import prompt
 import keyring
 from issho.config import write_issho_conf, read_issho_conf, \
-    read_ssh_profile
-from issho.helpers import issho_pw_name, issho_ssh_pw_name,\
+    read_ssh_profile, write_issho_env, read_issho_env
+from issho.helpers import issho_pw_name, issho_ssh_pw_name, \
     absolute_path, get_user
+from collections import OrderedDict
 from issho.issho import Issho
 import fire
 import re
@@ -15,18 +16,27 @@ Create your ssh key using:
 $ ssh-keygen -t rsa -b 4096 -C "email@email.com" -m PEM
 '''
 
+ENV_PROMPTS = OrderedDict((
+    ('HIVE_OPTS', 'Hive Options: '),
+    ('HIVE_JDBC', 'Hive JDBC connection string: '),
+    ('SPARK_CONF', 'Spark Shell Configuration String: ')
+))
+
+
 class IsshoCLI:
     """
     CLI for Issho; right now only used for configuration
     """
 
-    def config(self, profile, ssh_profile='', ssh_config='~/.ssh/config',
+    def config(self, profile, env=None, ssh_profile='', ssh_config='~/.ssh/config',
                rsa_id='~/.ssh/id_rsa'):
         """
         Configures a single issho profile. Saves non-private variables
         to ``~/.issho/conf.toml`` and passwords to the local keyring.
 
         :param profile: name of the profile to configure
+
+        :param env: Optional environment variable profile to draw from.
 
         :param ssh_profile: The name of the associated ssh config profile;
             defaults to the profile name if not supplied.
@@ -40,6 +50,8 @@ class IsshoCLI:
         ssh_profile = profile if not ssh_profile else profile
         rsa_id = absolute_path(rsa_id)
         ssh_config = absolute_path(ssh_config)
+        env = read_issho_env(env) if env else {}
+        print(env)
 
         ssh_conf = read_ssh_profile(ssh_config, ssh_profile)
         if not all(x in ssh_conf for x in ('hostname', 'user')):
@@ -49,22 +61,26 @@ class IsshoCLI:
             _set_up_ssh_password(rsa_id=rsa_id)
 
         kinit_was_setup = _set_up_password(pw_type='kinit',
-                         profile=profile,
-                         pw_user=local_user)
-
-        hive_opts = prompt('Hive Options: ')
-        hive_jdbc = prompt('Hive JDBC connection string: ')
-        spark_shell_conf = prompt('Spark Shell Configuration String: ')
+                                           profile=profile,
+                                           pw_user=local_user)
 
         new_conf = {
-            'HIVE_OPTS': hive_opts,
-            'HIVE_JDBC': hive_jdbc,
-            'SPARK_CONF': spark_shell_conf,
             'SSH_CONFIG_PATH': ssh_config,
-            'RSA_ID_PATH': rsa_id
+            'RSA_ID_PATH': rsa_id,
+            **_get_env_vars(env)
         }
         write_issho_conf({profile: new_conf})
         self.test_connection(profile, kinit=kinit_was_setup)
+
+    @staticmethod
+    def env(name):
+        """
+        Saves a set of variables to ~/.issho/envs.toml
+        :param name: name of the environment to set up or update
+        """
+        env_conf = {name: _get_env_vars({})}
+        write_issho_env(env_conf)
+        return env_conf
 
     @staticmethod
     def update_variable(profile, variable, value):
@@ -82,6 +98,11 @@ class IsshoCLI:
         except Exception as e:
             return 'Test Connection failed with error: {}'.format(str(e))
         return 'Test Connection Successful!'
+
+
+def _get_env_vars(env):
+    return {var_name: env.get(var_name) if var_name in env else prompt(prompt_str)
+            for var_name, prompt_str in ENV_PROMPTS.items()}
 
 
 def _get_pw(pw_type):

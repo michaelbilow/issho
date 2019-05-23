@@ -2,6 +2,12 @@
 History
 =======
 
+0.3.4 (2019-05-23)
+------------------
+* Allow hive to output to a file
+* Add environment variable profiles with ``issho env``
+* Update docs
+
 0.3.3 (2019-05-18)
 ------------------
 * Fix bug related to paramiko v2.4 not liking the Mac version of ssh keys.
