@@ -2,6 +2,10 @@
 History
 =======
 
+0.3.5 (2019-05-23)
+------------------
+* Delete blank top line from beeline by default.
+
 0.3.4 (2019-05-23)
 ------------------
 * Allow hive to output to a file
