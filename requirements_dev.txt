@@ -10,7 +10,7 @@ twine>=1.13.0
 sshtunnel>=0.1.4
 keyring>=18.0.0
 paramiko>=2.4.0
-cryptography==2.4.2
+cryptography==2.7
 prompt_toolkit>=1.0.10
 toml>=0.10.0
 fire>=0.1.3
