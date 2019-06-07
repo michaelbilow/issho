@@ -3,9 +3,9 @@
 """Top-level package for issho."""
 
 __author__ = """Michael Bilow"""
-__email__ = 'michael.k.bilow@gmail.com'
-__version__ = '0.3.5'
-__docformat__ = 'restructuredtext'
+__email__ = "michael.k.bilow@gmail.com"
+__version__ = "0.3.5"
+__docformat__ = "restructuredtext"
 
 
 from issho.issho import Issho

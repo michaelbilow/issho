@@ -3,9 +3,9 @@ import paramiko
 from pathlib import Path
 from issho.helpers import absolute_path
 
-ISSHO_DIR = Path.home().joinpath('.issho')
-ISSHO_CONF_FILE = ISSHO_DIR.joinpath('conf.toml')
-ISSHO_ENV_FILE = ISSHO_DIR.joinpath('envs.toml')
+ISSHO_DIR = Path.home().joinpath(".issho")
+ISSHO_CONF_FILE = ISSHO_DIR.joinpath("conf.toml")
+ISSHO_ENV_FILE = ISSHO_DIR.joinpath("envs.toml")
 
 
 def _make_issho_conf_dir():
@@ -51,7 +51,7 @@ def write_issho_conf(new_conf_dict, filename=ISSHO_CONF_FILE):
     _make_issho_conf_dir()
     old_issho_conf = toml.load(filename)
     new_conf = {**old_issho_conf, **new_conf_dict}
-    toml.dump(new_conf, open(str(filename), 'w'))
+    toml.dump(new_conf, open(str(filename), "w"))
     return
 
 
