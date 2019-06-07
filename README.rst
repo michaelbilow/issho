@@ -3,19 +3,26 @@ issho
 ======
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: https://raw.githubusercontent.com/usc-isi-i2/pyrallel/master/LICENSE
+    :target: https://raw.githubusercontent.com/michaelbilow/issho/master/LICENSE
     :alt: License
 
 .. image:: https://img.shields.io/pypi/v/issho.svg
-        :target: https://pypi.python.org/pypi/issho
+    :target: https://pypi.python.org/pypi/issho
 
 .. image:: https://img.shields.io/travis/michaelbilow/issho.svg
-        :target: https://travis-ci.org/michaelbilow/issho
+    :target: https://travis-ci.org/michaelbilow/issho
 
 .. image:: https://readthedocs.org/projects/issho/badge/?version=latest
-        :target: https://issho.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
+    :target: https://issho.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
+.. image:: https://img.shields.io/conda/vn/conda-forge/issho.svg
+    :target: https://anaconda.org/conda-forge/issho
+    :alt: Conda Version
+
+.. image:: https://img.shields.io/conda/pn/conda-forge/issho.svg
+    :target: https://anaconda.org/conda-forge/issho
+    :alt: Conda Platforms
 
 ``issho`` and intuitive wrapper over paramiko_ for configuring
 and talking to a remote host. keyring_ is used to
