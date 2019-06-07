@@ -6,15 +6,15 @@ issho
     :target: https://raw.githubusercontent.com/michaelbilow/issho/master/LICENSE
     :alt: License
 
-.. image:: https://img.shields.io/pypi/v/issho.svg
-    :target: https://pypi.python.org/pypi/issho
-
 .. image:: https://img.shields.io/travis/michaelbilow/issho.svg
     :target: https://travis-ci.org/michaelbilow/issho
 
 .. image:: https://readthedocs.org/projects/issho/badge/?version=latest
     :target: https://issho.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
+
+.. image:: https://img.shields.io/pypi/v/issho.svg
+    :target: https://pypi.python.org/pypi/issho
 
 .. image:: https://img.shields.io/conda/vn/conda-forge/issho.svg
     :target: https://anaconda.org/conda-forge/issho
