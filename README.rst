@@ -48,6 +48,11 @@ Installation
     pip install issho
 
 
+::
+
+    conda install -c conda-forge issho
+
+
 Features
 --------
 
@@ -55,6 +60,7 @@ Features
     - Port forwarding
     - Executing commands over ssh
     - Transferring files over sftp
+    - Running a hive query
 
 Credits
 -------

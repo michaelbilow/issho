@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.6 (2019-06-06)
+------------------
+* Format code using black
+* Update install to include conda-forge path
+
 0.3.5 (2019-05-23)
 ------------------
 * Delete blank top line from beeline by default.

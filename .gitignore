@@ -103,3 +103,5 @@ ENV/
 
 # idea
 .idea/
+
+.vscode/
