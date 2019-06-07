@@ -4,7 +4,7 @@
 
 __author__ = """Michael Bilow"""
 __email__ = "michael.k.bilow@gmail.com"
-__version__ = "0.3.5"
+__version__ = "__version__ = '0.3.6'"
 __docformat__ = "restructuredtext"
 
 

@@ -55,6 +55,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/michaelbilow/issho",
-    version="0.3.5",
+    version="version='0.3.6'",
     zip_safe=False,
 )
