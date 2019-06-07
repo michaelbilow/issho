@@ -24,6 +24,10 @@ issho
     :target: https://anaconda.org/conda-forge/issho
     :alt: Conda Platforms
 
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/python/black
+    :alt: Code style: black
+
 ``issho`` and intuitive wrapper over paramiko_ for configuring
 and talking to a remote host. keyring_ is used to
 manage secrets locally.
