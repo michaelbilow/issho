@@ -28,6 +28,10 @@ issho
     :target: https://github.com/python/black
     :alt: Code style: black
 
+.. image:: https://pepy.tech/badge/issho
+    :target: https://pepy.tech/project/issho
+    :alt: Downloads
+
 ``issho`` and intuitive wrapper over paramiko_ for configuring
 and talking to a remote host. keyring_ is used to
 manage secrets locally.

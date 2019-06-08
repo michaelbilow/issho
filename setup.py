@@ -15,7 +15,8 @@ requirements = [
     "sshtunnel>=0.1.4",
     "keyring>=18.0.0",
     "paramiko>=2.4.0",
-    "cryptography==2.4.2",  # https://github.com/paramiko/paramiko/issues/1369
+    "cryptography==2.4.2",  # https://github.com/paramiko/paramiko/issues/1379
+    # https://github.com/paramiko/paramiko/issues/1446
     "prompt_toolkit>=1.0.10",  # prompt_toolkit is used by jupyter_console,
     "toml>=0.10.0",
     "fire>=0.1.3",
@@ -55,6 +56,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/michaelbilow/issho",
-    version="version='0.3.7'",
+    version="0.3.7",
     zip_safe=False,
 )

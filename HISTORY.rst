@@ -2,6 +2,10 @@
 History
 =======
 
+0.4.0 (2019-06-07)
+------------------
+* Switch from bumpversion to punch_
+
 0.3.6 (2019-06-06)
 ------------------
 * Format code using black
@@ -67,3 +71,5 @@ History
 ------------------
 
 * First release on PyPI.
+
+.. _punch: https://github.com/lgiordani/punch
