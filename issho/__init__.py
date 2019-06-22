@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """Top-level package for issho."""
 
 __author__ = """Michael Bilow"""
@@ -21,9 +20,9 @@ Main Features
 -------------
 Here are a few of the things that issho (should) do well:
   - execute commands on a remote box
-  - run commands in the background on a remote box easily
   - transfer files to and from a remote easily
   - set up an SSH tunnel through a remote
+  - run Hive & Spark jobs
 
 TODOs
 ---------

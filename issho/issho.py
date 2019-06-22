@@ -1,26 +1,25 @@
 # -*- coding: utf-8 -*-
-
 """
 Implementation for the ``Issho`` class, which implements
 a connection and some simple commands over ``ssh``, using
 ``keyring`` to manage secrets locally.
 """
-
-import paramiko
-import keyring
-from sshtunnel import SSHTunnelForwarder
-from issho.helpers import (
-    default_sftp_path,
-    get_pkey,
-    issho_pw_name,
-    get_user,
-    clean_spark_options,
-)
-from issho.config import read_issho_conf, read_ssh_profile
 import sys
 import time
 from shutil import copyfile
+
 import humanize
+import keyring
+import paramiko
+from sshtunnel import SSHTunnelForwarder
+
+from issho.config import read_issho_conf
+from issho.config import read_ssh_profile
+from issho.helpers import clean_spark_options
+from issho.helpers import default_sftp_path
+from issho.helpers import get_pkey
+from issho.helpers import get_user
+from issho.helpers import issho_pw_name
 
 
 class Issho:
@@ -198,9 +197,10 @@ class Issho:
         jars="",
         files="",
         driver_class_path="",
-        app_class="",
+        application_class="",
         application="",
         application_args="",
+        bg=False,
     ):
         """
         Submit a spark job.
@@ -210,34 +210,44 @@ class Issho:
         :param jars: syntactic sugar for the --jars spark option
         :param files: syntactic sugar for the --files spark option
         :param driver_class_path: syntactic sugar for the --driver-class-path spark option
-        :param app_class: syntactic sugar for the --class spark option
+        :param application_class: syntactic sugar for the --class spark option
         :param application: the application to submit
         :param application_args: any arguments to be passed to the spark application
+        :param bg: True to run in the background, False otherwise
         :return:
         """
         assert application
         if not spark_options:
             spark_options = {}
         for k, v in locals().items():
-            if k in {"spark_options", "application", "application_args"}:
+            if k in {"spark_options", "application", "application_args", "self", "bg"}:
                 continue
+            clean_keys = {"application_class": "class"}
+            clean_k = clean_keys.get(k, k)
             if v:
-                spark_options[k] = v
+                spark_options[clean_k] = v
 
         cleaned_spark_options = clean_spark_options(spark_options)
         spark_options_str = " ".join(
-            map(lambda k, v: "{} {}".format(k, v), cleaned_spark_options.values())
+            (
+                "{} {}".format(k, v)
+                for k, v in sorted(cleaned_spark_options.items(), key=lambda x: x[0])
+            )
         )
         spark_cmd = "spark-submit {} {} {}".format(
             spark_options_str, application, application_args
         )
-        self.exec(spark_cmd)
+        print(spark_cmd)
+        self.exec(spark_cmd, bg=bg)
 
     def spark(self, *args, **kwargs):
         """
         Syntactic sugar for spark_submit
         """
         self.spark_submit(*args, **kwargs)
+
+    def spark_bg(self, *args, **kwargs):
+        self.spark_submit(bg=True, *args, **kwargs)
 
     def _connect(self):
         """
