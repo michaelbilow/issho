@@ -220,7 +220,14 @@ class Issho:
         if not spark_options:
             spark_options = {}
         for k, v in locals().items():
-            if k in {"spark_options", "application", "application_args", "self", "bg"}:
+            if k in {
+                "spark_options",
+                "application",
+                "application_args",
+                "self",
+                "bg",
+                "debug",
+            }:
                 continue
             clean_keys = {"application_class": "class"}
             clean_k = clean_keys.get(k, k)
@@ -237,8 +244,7 @@ class Issho:
         spark_cmd = "spark-submit {} {} {}".format(
             spark_options_str, application, application_args
         )
-        print(spark_cmd)
-        self.exec(spark_cmd, bg=bg)
+        self.exec(spark_cmd, bg=bg, debug=True)
 
     def spark(self, *args, **kwargs):
         """

@@ -59,10 +59,11 @@ Get Started!
 
 Ready to contribute? Here's how to set up `issho` for local development.
 
-1. Fork the `issho` repo on GitHub.
+1. Fork the `issho` repo on GitHub, and install the pre-commit hooks.
 2. Clone your fork locally::
 
     $ git clone git@github.com:your_name_here/issho.git
+    $ pre-commit install
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
