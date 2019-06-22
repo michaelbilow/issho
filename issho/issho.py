@@ -185,6 +185,56 @@ class Issho:
         if output_filename:
             self.get(tmp_output_filename, output_filename)
 
+    def spark_submit(
+        self,
+        spark_options=None,
+        master=None,
+        jars=None,
+        files=None,
+        driver_class_path=None,
+        app_class=None,
+        application=None,
+        *application_args
+    ):
+        """
+        Submit a spark job.
+
+        :param spark_options: A dict of spark options
+        :param master: syntactic sugar for the --master spark option
+        :param jars: syntactic sugar for the --jars spark option
+        :param files: syntactic sugar for the --files spark option
+        :param driver_class_path: syntactic sugar for the --driver-class-path spark option
+        :param app_class: syntactic sugar for the --class spark option
+        :param application: the application to submit
+        :param application_args: any arguments to be passed to the spark application
+        :return:
+        """
+        assert application
+        if not spark_options:
+            spark_options = {}
+        if app_class:
+            spark_options["class"] = app_class
+        if master:
+            spark_options["master"] = master
+        if jars:
+            spark_options["jars"] = jars
+        if files:
+            spark_options["files"] = files
+        if driver_class_path:
+            spark_options["driver-class-path"] = driver_class_path
+
+        spark_options_str = " ".join(
+            map(lambda k, v: "--{} {}".format(k, v), spark_options.values())
+        )
+        application_args_str = " ".join(map(str, application_args))
+        spark_cmd = "spark-submit {} {} {}".format(
+            spark_options_str, application, application_args_str
+        )
+        self.exec(spark_cmd)
+
+    def spark(self, *args, **kwargs):
+        self.spark_submit(*args, **kwargs)
+
     def _connect(self):
         """
         Uses paramiko to connect to the remote specified
