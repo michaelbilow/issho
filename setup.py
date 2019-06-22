@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """The setup script."""
-
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
 
 with open("README.rst") as readme_file:
     readme = readme_file.read()
@@ -54,6 +53,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/michaelbilow/issho",
-    version="0.4.1",
+    version="0.4.2",
     zip_safe=False,
 )
