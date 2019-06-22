@@ -66,3 +66,12 @@ def issho_ssh_pw_name(rsa_id):
 
 def get_user():
     return os.environ.get("USER")
+
+
+def clean_spark_options(spark_options):
+    new_spark_options = {}
+    for k, v in spark_options.items():
+        if not k.startswith("--"):
+            k = "--{}".format(k)
+        new_spark_options[k.replace("_", "-")] = v
+    return new_spark_options

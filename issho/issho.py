@@ -9,7 +9,13 @@ a connection and some simple commands over ``ssh``, using
 import paramiko
 import keyring
 from sshtunnel import SSHTunnelForwarder
-from issho.helpers import default_sftp_path, get_pkey, issho_pw_name, get_user
+from issho.helpers import (
+    default_sftp_path,
+    get_pkey,
+    issho_pw_name,
+    get_user,
+    clean_spark_options,
+)
 from issho.config import read_issho_conf, read_ssh_profile
 import sys
 import time
@@ -188,13 +194,13 @@ class Issho:
     def spark_submit(
         self,
         spark_options=None,
-        master=None,
-        jars=None,
-        files=None,
-        driver_class_path=None,
-        app_class=None,
-        application=None,
-        *application_args
+        master="",
+        jars="",
+        files="",
+        driver_class_path="",
+        app_class="",
+        application="",
+        application_args="",
     ):
         """
         Submit a spark job.
@@ -212,23 +218,18 @@ class Issho:
         assert application
         if not spark_options:
             spark_options = {}
-        if app_class:
-            spark_options["class"] = app_class
-        if master:
-            spark_options["master"] = master
-        if jars:
-            spark_options["jars"] = jars
-        if files:
-            spark_options["files"] = files
-        if driver_class_path:
-            spark_options["driver-class-path"] = driver_class_path
+        for k, v in locals().items():
+            if k in {"spark_options", "application", "application_args"}:
+                continue
+            if v:
+                spark_options[k] = v
 
+        cleaned_spark_options = clean_spark_options(spark_options)
         spark_options_str = " ".join(
-            map(lambda k, v: "--{} {}".format(k, v), spark_options.values())
+            map(lambda k, v: "{} {}".format(k, v), cleaned_spark_options.values())
         )
-        application_args_str = " ".join(map(str, application_args))
         spark_cmd = "spark-submit {} {} {}".format(
-            spark_options_str, application, application_args_str
+            spark_options_str, application, application_args
         )
         self.exec(spark_cmd)
 
