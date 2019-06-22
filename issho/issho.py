@@ -200,7 +200,6 @@ class Issho:
         application_class="",
         application="",
         application_args="",
-        bg=False,
     ):
         """
         Submit a spark job.
@@ -213,7 +212,6 @@ class Issho:
         :param application_class: syntactic sugar for the --class spark option
         :param application: the application to submit
         :param application_args: any arguments to be passed to the spark application
-        :param bg: True to run in the background, False otherwise
         :return:
         """
         assert application
@@ -244,16 +242,13 @@ class Issho:
         spark_cmd = "spark-submit {} {} {}".format(
             spark_options_str, application, application_args
         )
-        self.exec(spark_cmd, bg=bg, debug=True)
+        self.exec(spark_cmd)
 
     def spark(self, *args, **kwargs):
         """
         Syntactic sugar for spark_submit
         """
         self.spark_submit(*args, **kwargs)
-
-    def spark_bg(self, *args, **kwargs):
-        self.spark_submit(bg=True, *args, **kwargs)
 
     def _connect(self):
         """
