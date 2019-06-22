@@ -2,6 +2,10 @@
 History
 =======
 
+0.4.2 (2019-06-22)
+------------------
+* Add ``spark`` and ``spark_submit`` operator
+
 0.4.0 (2019-06-07)
 ------------------
 * Switch from bumpversion to punch_
