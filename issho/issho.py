@@ -233,6 +233,9 @@ class Issho:
         self.exec(spark_cmd)
 
     def spark(self, *args, **kwargs):
+        """
+        Syntactic sugar for spark_submit
+        """
         self.spark_submit(*args, **kwargs)
 
     def _connect(self):
