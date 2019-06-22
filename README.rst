@@ -47,6 +47,9 @@ machine should be *simple*.
 
 Installation
 ------------
+
+Install with ``pip`` or ``conda``
+
 ::
 
     pip install issho

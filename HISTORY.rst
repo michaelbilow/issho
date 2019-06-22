@@ -5,6 +5,7 @@ History
 0.4.2 (2019-06-22)
 ------------------
 * Add ``spark`` and ``spark_submit`` operator
+* Upgrade to ``paramiko >=2.5.0``, fixing bug with recent versions of ``cryptography``
 
 0.4.0 (2019-06-07)
 ------------------

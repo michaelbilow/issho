@@ -8,8 +8,7 @@ Sphinx>=1.8.4
 twine>=1.13.0
 sshtunnel>=0.1.4
 keyring>=18.0.0
-paramiko>=2.4.0
-cryptography==2.4.2
+paramiko>=2.5.0
 prompt_toolkit>=1.0.10
 toml>=0.10.0
 fire>=0.1.3

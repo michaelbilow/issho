@@ -14,9 +14,7 @@ with open("HISTORY.rst") as history_file:
 requirements = [
     "sshtunnel>=0.1.4",
     "keyring>=18.0.0",
-    "paramiko>=2.4.0",
-    "cryptography==2.4.2",  # https://github.com/paramiko/paramiko/issues/1379
-    # https://github.com/paramiko/paramiko/issues/1446
+    "paramiko>=2.5.0",
     "prompt_toolkit>=1.0.10",  # prompt_toolkit is used by jupyter_console,
     "toml>=0.10.0",
     "fire>=0.1.3",
