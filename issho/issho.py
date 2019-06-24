@@ -4,8 +4,10 @@ Implementation for the ``Issho`` class, which implements
 a connection and some simple commands over ``ssh``, using
 ``keyring`` to manage secrets locally.
 """
+import re
 import sys
 import time
+from functools import partial
 from shutil import copyfile
 
 import humanize
@@ -15,6 +17,7 @@ from sshtunnel import SSHTunnelForwarder
 
 from issho.config import read_issho_conf
 from issho.config import read_ssh_profile
+from issho.helpers import add_arguments_to_cmd
 from issho.helpers import clean_spark_options
 from issho.helpers import default_sftp_path
 from issho.helpers import get_pkey
@@ -37,6 +40,15 @@ class Issho:
         self._remote_home_dir = self.get_output("echo $HOME").strip()
         return
 
+    def __getattr__(self, method_name):
+        """
+        Allows the automatic creation of syntactic sugar methods like
+        Issho.ls, Issho.mv, etc.
+        :param method_name: the name of the uninstantiated method to be called
+        :return: a partially-applied method
+        """
+        return partial(self.exec, method_name.replace("_", " "))
+
     def local_forward(
         self, remote_host, remote_port, local_host="0.0.0.0", local_port=44556
     ):
@@ -55,7 +67,7 @@ class Issho:
         tunnel.start()
         return tunnel
 
-    def exec(self, cmd, bg=False, debug=False, capture_output=False):
+    def exec(self, cmd, *args, bg=False, debug=False, capture_output=False):
         """
         Execute a command in bash over the SSH connection.
 
@@ -66,6 +78,8 @@ class Issho:
 
         :param cmd: The bash command to be run remotely
 
+        :param *args: Additional arguments to the command cmd
+
         :param bg: True = run in the background
 
         :param debug: True = print some debugging output
@@ -74,9 +88,11 @@ class Issho:
 
         :return:
         """
+        cmd = add_arguments_to_cmd(cmd, *args)
         if bg:
             cmd = 'cmd=$"{}"; nohup bash -c "$cmd" &'.format(cmd.replace('"', r"\""))
         if debug:
+            print(args)
             print(cmd)
         stdin, stdout, stderr = self._ssh.exec_command(cmd)
 
@@ -91,50 +107,70 @@ class Issho:
             sys.stderr.write(line)
         return captured_output
 
-    def exec_bg(self, cmd, **kwargs):
+    def exec_bg(self, cmd, *args, **kwargs):
         """
         Syntactic sugar for ``exec(bg=True)``
         """
-        return self.exec(cmd, bg=True, **kwargs)
+        return self.exec(cmd, *args, bg=True, **kwargs)
 
-    def get_output(self, cmd, **kwargs):
+    def get_output(self, cmd, *args, **kwargs):
         """
         Syntactic sugar for ``exec(capture_output=True)``
         """
-        return self.exec(cmd, capture_output=True, **kwargs)
+        return self.exec(cmd, *args, **kwargs, capture_output=True)
 
-    def get(self, remotepath, localpath=None):
+    def get(self, remotepath, localpath=None, hadoop=False):
         """
         Gets the file at the remote path and puts it locally.
 
         :param remotepath: The path on the remote from which to get.
 
         :param localpath: Defaults to the name of the remote path
+
+        :param hadoop: Download from HDFS
         """
+        hadoop = hadoop or remotepath.startswith("hdfs")
         paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
+        if hadoop:
+            tmp_path = "/tmp/{}_{}".format(
+                paths["localpath"].replace("/", "_"), time.time()
+            )
+            self.hadoop("get -f", remotepath, tmp_path)
+            paths["remotepath"] = tmp_path
         with self._ssh.open_sftp() as sftp:
             sftp.get(
                 remotepath=paths["remotepath"],
                 localpath=paths["localpath"],
                 callback=self._sftp_progress,
             )
+        if hadoop:
+            self.exec("rm", paths["remotepath"])
         return
 
-    def put(self, localpath, remotepath=None):
+    def put(self, localpath, remotepath=None, hadoop=False):
         """
         Puts the file at the local path to the remote.
 
         :param localpath: The local path of the file to put to the remote
 
         :param remotepath: Defaults to the name of the local path
+
+        :param hadoop: Upload to HDFS
         """
+        hadoop = hadoop or remotepath.startswith("hdfs")
         paths = self._sftp_paths(localpath=localpath, remotepath=remotepath)
+        if hadoop:
+            tmp_path = "/tmp/{}_{}".format(localpath.replace("/", "_"), time.time())
+            paths["remotepath"] = tmp_path
         with self._ssh.open_sftp() as sftp:
             sftp.put(
                 localpath=paths["localpath"],
                 remotepath=paths["remotepath"],
                 callback=self._sftp_progress,
             )
+        if hadoop:
+            self.hadoop("put", paths["remotepath"], remotepath)
+            self.exec("rm", paths["remotepath"])
         return
 
     def kinit(self):
@@ -175,7 +211,11 @@ class Issho:
 
         tmp_output_filename = "{}.output".format(tmp_filename)
 
-        hive_cmd = 'beeline {opts} -u  "{jdbc}" -f {fn} {remove_first_line} {redirect_to_tmp_fn}'.format(
+        hive_cmd_template = """
+        beeline {opts} -u  "{jdbc}" -f {fn} {remove_first_line} {redirect_to_tmp_fn}
+        """.strip()
+
+        hive_cmd = hive_cmd_template.format(
             opts=self.issho_conf["HIVE_OPTS"],
             jdbc=self.issho_conf["HIVE_JDBC"],
             fn=tmp_filename,
@@ -249,6 +289,10 @@ class Issho:
         Syntactic sugar for spark_submit
         """
         self.spark_submit(*args, **kwargs)
+
+    def hadoop(self, command, *args, **kwargs):
+        hadoop_cmd = "-{}".format(re.sub("^-*", "", command))
+        return self.exec("hadoop fs", hadoop_cmd, *args, **kwargs)
 
     def _connect(self):
         """

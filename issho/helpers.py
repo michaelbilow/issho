@@ -1,8 +1,9 @@
-from pathlib import Path
-import socket
-import paramiko
-import keyring
 import os
+import socket
+from pathlib import Path
+
+import keyring
+import paramiko
 
 
 def absolute_path(raw_path):
@@ -75,3 +76,11 @@ def clean_spark_options(spark_options):
             k = "--{}".format(k)
         new_spark_options[k.replace("_", "-")] = v
     return new_spark_options
+
+
+def add_arguments_to_cmd(cmd, *args):
+    if not args:
+        return cmd
+    else:
+        string_args = " ".join(map(str, args))
+        return "{} {}".format(cmd, string_args)

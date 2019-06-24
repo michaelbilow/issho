@@ -2,6 +2,12 @@
 History
 =======
 
+0.5.0 (2019-06-24)
+------------------
+* Add ``hadoop`` operators
+* Allow some simple runtime execution by overriding ``__getattr__``
+* Add new operators to docs
+
 0.4.2 (2019-06-22)
 ------------------
 * Add ``spark`` and ``spark_submit`` operator
