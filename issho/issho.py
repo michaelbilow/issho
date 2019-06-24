@@ -291,8 +291,21 @@ class Issho:
         self.spark_submit(*args, **kwargs)
 
     def hadoop(self, command, *args, **kwargs):
+        """
+        Execute the hadoop command
+        :param command:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         hadoop_cmd = "-{}".format(re.sub("^-*", "", command))
         return self.exec("hadoop fs", hadoop_cmd, *args, **kwargs)
+
+    def hdfs(self, *args, **kwargs):
+        """
+        Syntactic sugar for hadoop
+        """
+        return self.hadoop(*args, **kwargs)
 
     def _connect(self):
         """

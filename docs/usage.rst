@@ -62,11 +62,19 @@ Underscores in the function name are converted to spaces::
 Hadoop & HDFS
 =============
 
-Hadoop functions can be accessed using the ``.hadoop`` method.
+Hadoop functions can be accessed using the ``.hadoop`` or ``.hdfs`` methods.
+You do not need to prepend the dash to hadoop operations, though they will
+still work with it::
+
+    devbox.hdfs('ls /tmp | grep test')
+    devbox.hadoop('mkdir -p /tmp/test/')
 
 
 ``put`` and ``get`` can also get from HDFS, if passed a qualified
-HDFS path, or if the `hadoop` option is passed.
+HDFS path, or if the `hadoop` option is passed.::
+
+    devbox.put('test.txt', '/tmp/my_folder/', hadoop=True)
+    devbox.get('hdfs:///tmp/myfile')
 
 Hive
 ====
@@ -83,7 +91,10 @@ Results from hive queries can be output locally by passing an output_filename::
 Spark
 =====
 
-``issho`` can trigger a spark job using ``spark-submit``
+``issho`` can trigger a spark job using ``spark-submit``; you can call it using
+```spark_submit`` or ``spark``::
+
+    devbox.spark(application='test.jar', application_class='com.test.SparkWorkflow'...)
 
 
 
