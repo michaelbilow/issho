@@ -17,7 +17,7 @@ requirements = [
     "prompt_toolkit>=1.0.10",
     "toml>=0.10.0",
     "fire>=0.1.3",
-    "humanize>=0.5.0",
+    "humanize>=0.5.1",
 ]
 
 setup_requirements = []
@@ -53,6 +53,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/michaelbilow/issho",
-    version="0.5.0",
+    version="0.5.1",
     zip_safe=False,
 )
