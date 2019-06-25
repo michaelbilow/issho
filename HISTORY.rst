@@ -2,11 +2,15 @@
 History
 =======
 
-0.5.0 (2019-06-24)
+0.5.1 (2019-06-24)
 ------------------
 * Add ``hadoop`` operators
 * Allow some simple runtime execution by overriding ``__getattr__``
 * Add new operators to docs
+
+0.5.0 (2019-06-24)
+------------------
+* Error release
 
 0.4.2 (2019-06-22)
 ------------------
