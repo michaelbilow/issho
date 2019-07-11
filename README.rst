@@ -48,7 +48,7 @@ machine should be *simple*.
 Installation
 ------------
 
-Install with ``pip`` or ``conda``
+Install with ``pip`` or ``conda``. **IMPORTANT NOTE**: For python 3.5, install via ``pip`` only; several ``issho`` dependencies have not been updated on ``conda-forge``.
 
 ::
 
@@ -68,6 +68,8 @@ Features
     - Executing commands over ssh
     - Transferring files over sftp
     - Running a hive query
+    - Running a spark job
+
 
 Credits
 -------
@@ -82,7 +84,7 @@ framework is inspired by `Colin Wood`_'s sshed_.
 Shout out to `Spencer Tipping`_, `Neal Fultz`_, and `Factual`_
 for helping me learn to write my own tools.
 
-Thanks to `Michael Vertuli`_ for helping test.
+Thanks to `Michael Vertuli`_ and `Fangshu Lin`_ for helping test.
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
@@ -96,3 +98,5 @@ Thanks to `Michael Vertuli`_ for helping test.
 .. _Neal Fultz: https://github.com/nfultz
 .. _Michael Vertuli: https://github.com/vertuli
 .. _Factual: https://www.factual.com
+.. _Fangshu Lin: https://github.com/fangshu16
+
